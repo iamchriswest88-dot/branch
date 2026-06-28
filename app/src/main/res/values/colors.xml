@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#FF0A0A0A</color>
+    <color name="surface">#FF141414</color>
+    <color name="surface2">#FF1B1B1B</color>
+    <color name="line">#FF262626</color>
+    <color name="line2">#FF333333</color>
+    <color name="text">#FFEDEDED</color>
+    <color name="muted">#FF8A8A8A</color>
+    <color name="faint">#FF5A5A5A</color>
+    <color name="red">#FFE0001B</color>
+    <color name="leaf">#FF86D17A</color>
+    <color name="leafDim">#FF1D271D</color>
+    <color name="emblA">#FF9BDB85</color>
+    <color name="emblB">#FF4E9C5C</color>
+    <color name="ghost">#FF36513A</color>
+    <color name="led">#FFF4F4F4</color>
+    <color name="ledDim">#FF1F1F1F</color>
+</resources>
