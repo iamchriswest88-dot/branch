@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onResume() {
     super.onResume()
-    androidx.lifecycle.lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
       try {
         val app = application as BranchApplication
         app.syncManager.syncToCloud()
