@@ -20,7 +20,7 @@ class SyncManager(private val db: BranchDatabase) {
             val exArray = JSONArray(exJson)
             for (i in 0 until exArray.length()) {
                 val obj = exArray.getJSONObject(i)
-                db.exerciseDao().insert(
+                db.exerciseDao().upsert(
                     Exercise(
                         id = obj.getString("id"),
                         name = obj.getString("name"),
@@ -36,7 +36,7 @@ class SyncManager(private val db: BranchDatabase) {
             val woArray = JSONArray(woJson)
             for (i in 0 until woArray.length()) {
                 val obj = woArray.getJSONObject(i)
-                db.workoutDao().insert(
+                db.workoutDao().upsert(
                     Workout(
                         id = obj.getString("id"),
                         name = obj.getString("name"),
@@ -48,9 +48,10 @@ class SyncManager(private val db: BranchDatabase) {
             // 3. Fetch Steps
             val stepJson = fetchFromSupabase("/rest/v1/steps")
             val stepArray = JSONArray(stepJson)
+            val stepsList = mutableListOf<Step>()
             for (i in 0 until stepArray.length()) {
                 val obj = stepArray.getJSONObject(i)
-                db.stepDao().insert(
+                stepsList.add(
                     Step(
                         id = obj.getString("id"),
                         workoutId = obj.getString("workout_id"),
@@ -64,6 +65,9 @@ class SyncManager(private val db: BranchDatabase) {
                         sortOrder = obj.getInt("sort_order")
                     )
                 )
+            }
+            if (stepsList.isNotEmpty()) {
+                db.stepDao().upsertAll(stepsList)
             }
             // 4. Fetch DoneLogs
             val doneJson = fetchFromSupabase("/rest/v1/done_log")
