@@ -74,9 +74,9 @@ class GymViewModel(
                 val app = this[APPLICATION_KEY] as BranchApplication
                 val db  = app.database
                 GymViewModel(
-                    workoutRepo  = WorkoutRepository(db.workoutDao(), db.stepDao()),
-                    exerciseRepo = ExerciseRepository(db.exerciseDao()),
-                    doneRepo     = DoneRepository(db.doneDao()),
+                    workoutRepo  = WorkoutRepository(db.workoutDao(), db.stepDao(), app.syncManager),
+                    exerciseRepo = ExerciseRepository(db.exerciseDao(), app.syncManager),
+                    doneRepo     = DoneRepository(db.doneDao(), app.syncManager),
                     planRepo     = PlanRepository(db.planDao()),
                     prefs        = BranchPrefs(app),
                 )

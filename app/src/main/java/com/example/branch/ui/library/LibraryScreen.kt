@@ -36,9 +36,6 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
     val context = androidx.compose.ui.platform.LocalContext.current
     val app = context.applicationContext as com.example.branch.BranchApplication
     val db = remember { app.database }
-    val scope = rememberCoroutineScope()
-    val syncManager = remember { com.example.branch.data.SyncManager(db) }
-    var isSyncing by remember { mutableStateOf(false) }
 
     val allFilterAreas = listOf("All") + vm.allAreas
     val filteredGym  = if (selectedArea == "All") gymExercises else gymExercises.filter { it.area == selectedArea }
@@ -52,21 +49,6 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
         item { 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text("Library", style = MaterialTheme.typography.displaySmall, color = NothingText) 
-                TextButton(
-                    onClick = { 
-                        isSyncing = true
-                        scope.launch {
-                            val pushSuccess = syncManager.syncToCloud()
-                            val pullSuccess = syncManager.syncFromCloud()
-                            val msg = if (pushSuccess && pullSuccess) "Synced with Cloud!" else "Sync failed. Check connection."
-                            android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
-                            isSyncing = false
-                        }
-                    },
-                    enabled = !isSyncing
-                ) {
-                    Text(if (isSyncing) "Syncing..." else "Sync Cloud", color = NothingRed, style = MaterialTheme.typography.labelMedium)
-                }
             }
         }
 

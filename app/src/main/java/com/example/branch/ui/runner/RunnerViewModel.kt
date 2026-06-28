@@ -212,8 +212,8 @@ class RunnerViewModel(
                 val db  = app.database
                 RunnerViewModel(
                     workoutId   = workoutId,
-                    workoutRepo = WorkoutRepository(db.workoutDao(), db.stepDao()),
-                    doneRepo    = DoneRepository(db.doneDao()),
+                    workoutRepo = WorkoutRepository(db.workoutDao(), db.stepDao(), app.syncManager),
+                    doneRepo    = DoneRepository(db.doneDao(), app.syncManager),
                     planRepo    = PlanRepository(db.planDao()),
                     prefs       = BranchPrefs(app),
                     application = app
