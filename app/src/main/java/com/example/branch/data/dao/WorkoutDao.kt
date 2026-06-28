@@ -10,6 +10,9 @@ interface WorkoutDao {
     @Query("SELECT * FROM workouts WHERE category = :category ORDER BY name ASC")
     fun getByCategory(category: String): Flow<List<Workout>>
 
+    @Query("SELECT * FROM workouts")
+    suspend fun getAllSync(): List<Workout>
+
     @Transaction
     @Query("SELECT * FROM workouts WHERE id = :workoutId")
     fun getWithSteps(workoutId: String): Flow<WorkoutWithSteps?>

@@ -12,6 +12,9 @@ interface ExerciseDao {
     @Query("SELECT * FROM exercises ORDER BY isCustom ASC, name ASC")
     fun getAll(): Flow<List<Exercise>>
 
+    @Query("SELECT * FROM exercises")
+    suspend fun getAllSync(): List<Exercise>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertIfAbsent(exercises: List<Exercise>)
 

@@ -12,6 +12,9 @@ interface DoneDao {
     @Query("SELECT dateKey FROM done_log WHERE category = :category ORDER BY dateKey ASC")
     suspend fun getDatesByCategorySync(category: String): List<String>
 
+    @Query("SELECT * FROM done_log")
+    suspend fun getAllSync(): List<DoneLog>
+
     @Query("SELECT * FROM done_log WHERE category = :category AND dateKey = :dateKey LIMIT 1")
     suspend fun find(category: String, dateKey: String): DoneLog?
 

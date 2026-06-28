@@ -65,6 +65,93 @@ class SyncManager(private val db: BranchDatabase) {
                     )
                 )
             }
+            // 4. Fetch DoneLogs
+            val doneJson = fetchFromSupabase("/rest/v1/done_log")
+            val doneArray = JSONArray(doneJson)
+            for (i in 0 until doneArray.length()) {
+                val obj = doneArray.getJSONObject(i)
+                db.doneDao().insert(
+                    com.example.branch.data.model.DoneLog(
+                        id = obj.getString("id"),
+                        category = obj.getString("category"),
+                        dateKey = obj.getString("date_key")
+                    )
+                )
+            }
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    suspend fun syncToCloud(): Boolean = withContext(Dispatchers.IO) {
+        try {
+            // 1. Push Exercises
+            val exercises = db.exerciseDao().getAllSync()
+            if (exercises.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                exercises.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("id", it.id)
+                    obj.put("name", it.name)
+                    obj.put("area", it.area)
+                    obj.put("category", it.category)
+                    obj.put("is_custom", it.isCustom)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/exercises", jsonArray.toString())
+            }
+
+            // 2. Push Workouts
+            val workouts = db.workoutDao().getAllSync()
+            if (workouts.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                workouts.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("id", it.id)
+                    obj.put("name", it.name)
+                    obj.put("category", it.category)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/workouts", jsonArray.toString())
+            }
+
+            // 3. Push Steps
+            val steps = db.stepDao().getAllSync()
+            if (steps.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                steps.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("id", it.id)
+                    obj.put("workout_id", it.workoutId)
+                    obj.put("exercise_id", it.exerciseId)
+                    obj.put("exercise_name", it.exerciseName)
+                    obj.put("sets", it.sets)
+                    obj.put("work_sec", it.workSec)
+                    obj.put("rest_sec", it.restSec)
+                    obj.put("sides", it.sides)
+                    obj.put("swap_sec", it.swapSec)
+                    obj.put("sort_order", it.sortOrder)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/steps", jsonArray.toString())
+            }
+
+            // 4. Push DoneLogs
+            val doneLogs = db.doneDao().getAllSync()
+            if (doneLogs.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                doneLogs.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("id", it.id)
+                    obj.put("category", it.category)
+                    obj.put("date_key", it.dateKey)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/done_log", jsonArray.toString())
+            }
+
             true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -81,5 +168,24 @@ class SyncManager(private val db: BranchDatabase) {
         connection.setRequestProperty("Content-Type", "application/json")
         
         return connection.inputStream.bufferedReader().use { it.readText() }
+    }
+
+    private fun pushToSupabase(endpoint: String, jsonBody: String) {
+        val url = URL("$SUPABASE_URL$endpoint")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "POST"
+        connection.setRequestProperty("apikey", SUPABASE_KEY)
+        connection.setRequestProperty("Authorization", "Bearer $SUPABASE_KEY")
+        connection.setRequestProperty("Content-Type", "application/json")
+        connection.setRequestProperty("Prefer", "resolution=merge-duplicates")
+        connection.doOutput = true
+        
+        connection.outputStream.use { os ->
+            val input = jsonBody.toByteArray(Charsets.UTF_8)
+            os.write(input, 0, input.size)
+        }
+        
+        // Ensure request is sent
+        connection.responseCode
     }
 }

@@ -8,6 +8,9 @@ interface StepDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(steps: List<Step>)
 
+    @Query("SELECT * FROM steps")
+    suspend fun getAllSync(): List<Step>
+
     @Query("DELETE FROM steps WHERE workoutId = :workoutId")
     suspend fun deleteByWorkout(workoutId: String)
 

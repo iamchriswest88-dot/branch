@@ -56,8 +56,9 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
                     onClick = { 
                         isSyncing = true
                         scope.launch {
-                            val success = syncManager.syncFromCloud()
-                            val msg = if (success) "Synced with Cloud!" else "Sync failed. Check connection."
+                            val pushSuccess = syncManager.syncToCloud()
+                            val pullSuccess = syncManager.syncFromCloud()
+                            val msg = if (pushSuccess && pullSuccess) "Synced with Cloud!" else "Sync failed. Check connection."
                             android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
                             isSyncing = false
                         }
