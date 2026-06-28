@@ -25,13 +25,13 @@ class MainActivity : ComponentActivity() {
 
   override fun onResume() {
     super.onResume()
-    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-      try {
-        val app = application as BranchApplication
-        app.syncManager.syncToCloud()
-        app.syncManager.syncFromCloud()
-      } catch (e: Exception) { e.printStackTrace() }
-    }
+    // lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+    //   try {
+    //     val app = application as BranchApplication
+    //     app.syncManager.syncToCloud()
+    //     app.syncManager.syncFromCloud()
+    //   } catch (e: Exception) { e.printStackTrace() }
+    // }
   }
 
   override fun onPause() {
