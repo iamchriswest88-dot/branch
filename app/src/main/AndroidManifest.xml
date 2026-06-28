@@ -6,6 +6,8 @@
     <!-- Calendar mirror -->
     <uses-permission android:name="android.permission.READ_CALENDAR"/>
     <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <!-- Network access for Supabase Sync -->
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".BranchApplication"

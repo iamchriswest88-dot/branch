@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Dashboard</title>
+    <meta name="description" content="Dashboard to create exercises and workouts for Branch">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts to approximate Nothing fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app-container">
+        <header>
+            <div class="logo">
+                <span class="logo-dot"></span>
+                <h1>Branch</h1>
+                <span class="subtitle">DASHBOARD</span>
+            </div>
+            <button id="btn-export" class="action-btn">Export to Branch</button>
+        </header>
+
+        <main>
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-target="exercises-view">Exercises</button>
+                <button class="tab-btn" data-target="workouts-view">Workouts</button>
+            </div>
+
+            <!-- Exercises View -->
+            <section id="exercises-view" class="view active">
+                <div class="view-header">
+                    <h2>Manage Exercises</h2>
+                    <button id="btn-new-exercise" class="add-btn">+ New Exercise</button>
+                </div>
+                <div class="list-container" id="exercises-list">
+                    <!-- Exercise cards rendered here -->
+                </div>
+            </section>
+
+            <!-- Workouts View -->
+            <section id="workouts-view" class="view">
+                <div class="view-header">
+                    <h2>Manage Workouts</h2>
+                    <button id="btn-new-workout" class="add-btn">+ New Workout</button>
+                </div>
+                <div class="list-container" id="workouts-list">
+                    <!-- Workout cards rendered here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="exercise-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="exercise-modal-title">New Exercise</h3>
+            <form id="exercise-form">
+                <input type="hidden" id="ex-id">
+                <div class="form-group">
+                    <label for="ex-name">Name</label>
+                    <input type="text" id="ex-name" required placeholder="e.g. Push Ups">
+                </div>
+                <div class="form-group">
+                    <label for="ex-area">Area</label>
+                    <input type="text" id="ex-area" required placeholder="e.g. Chest">
+                </div>
+                <div class="form-group">
+                    <label for="ex-category">Category</label>
+                    <select id="ex-category" required>
+                        <option value="gym">Gym</option>
+                        <option value="flow">Flow</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="ex-custom">
+                    <label for="ex-custom">Is Custom?</label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('exercise-modal')">Cancel</button>
+                    <button type="submit" class="btn-save">Save Exercise</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="workout-modal" class="modal">
+        <div class="modal-content large">
+            <h3 id="workout-modal-title">New Workout</h3>
+            <form id="workout-form">
+                <input type="hidden" id="wo-id">
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label for="wo-name">Workout Name</label>
+                        <input type="text" id="wo-name" required placeholder="e.g. Upper Body Power">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="wo-category">Category</label>
+                        <select id="wo-category" required>
+                            <option value="gym">Gym</option>
+                            <option value="flow">Flow</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="steps-section">
+                    <div class="steps-header">
+                        <h4>Workout Steps</h4>
+                        <button type="button" id="btn-add-step" class="add-btn small">+ Add Step</button>
+                    </div>
+                    <div id="steps-container">
+                        <!-- Steps rendered here -->
+                    </div>
+                </div>
+
+                <div class="modal-actions mt-20">
+                    <button type="button" class="btn-cancel" onclick="closeModal('workout-modal')">Cancel</button>
+                    <button type="submit" class="btn-save">Save Workout</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+</html>

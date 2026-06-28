@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.branch.data.model.Exercise
 import com.example.branch.theme.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +33,13 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
     var flowExpanded by rememberSaveable { mutableStateOf(false) }
     var selectedArea by rememberSaveable { mutableStateOf("All") }
 
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val app = context.applicationContext as com.example.branch.BranchApplication
+    val db = remember { app.database }
+    val scope = rememberCoroutineScope()
+    val syncManager = remember { com.example.branch.data.SyncManager(db) }
+    var isSyncing by remember { mutableStateOf(false) }
+
     val allFilterAreas = listOf("All") + vm.allAreas
     val filteredGym  = if (selectedArea == "All") gymExercises else gymExercises.filter { it.area == selectedArea }
     val filteredFlow = if (selectedArea == "All") flowExercises else flowExercises.filter { it.area == selectedArea }
@@ -41,7 +49,25 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(vertical = 24.dp)
     ) {
-        item { Text("Library", style = MaterialTheme.typography.displaySmall, color = NothingText) }
+        item { 
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("Library", style = MaterialTheme.typography.displaySmall, color = NothingText) 
+                TextButton(
+                    onClick = { 
+                        isSyncing = true
+                        scope.launch {
+                            val success = syncManager.syncFromCloud()
+                            val msg = if (success) "Synced with Cloud!" else "Sync failed. Check connection."
+                            android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
+                            isSyncing = false
+                        }
+                    },
+                    enabled = !isSyncing
+                ) {
+                    Text(if (isSyncing) "Syncing..." else "Sync Cloud", color = NothingRed, style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
 
         item {
             var filterExpanded by remember { mutableStateOf(false) }
