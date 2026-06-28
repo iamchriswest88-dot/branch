@@ -11,12 +11,10 @@ import java.util.concurrent.TimeUnit
 class BranchApplication : Application() {
 
     val database by lazy { BranchDatabase.getDatabase(this) }
-    val syncManager by lazy { com.example.branch.data.SyncManager(database) }
 
     override fun onCreate() {
         super.onCreate()
         scheduleDailyStreakWork()
-        syncManager.startRealtimeSync(kotlinx.coroutines.GlobalScope)
     }
 
     private fun scheduleDailyStreakWork() {

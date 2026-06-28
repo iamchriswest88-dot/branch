@@ -85,14 +85,6 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    // Supabase
-    val supabaseVersion = "3.0.0"
-    implementation(platform("io.github.jan-tennert.supabase:bom:$supabaseVersion"))
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")
-    implementation("io.github.jan-tennert.supabase:realtime-kt")
-    implementation("io.ktor:ktor-client-okhttp:$supabaseVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
-
     // Glyph Matrix SDK — uncomment after placing GlyphMatrixSDK.aar in app/libs/
     // implementation(files("libs/GlyphMatrixSDK.aar"))
 

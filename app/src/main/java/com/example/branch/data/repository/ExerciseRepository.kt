@@ -5,10 +5,7 @@ import com.example.branch.data.dao.ExerciseDao
 import com.example.branch.data.model.Exercise
 import kotlinx.coroutines.flow.Flow
 
-class ExerciseRepository(
-    private val dao: ExerciseDao,
-    private val syncManager: com.example.branch.data.SyncManager
-) {
+class ExerciseRepository(private val dao: ExerciseDao) {
 
     fun getExercises(category: String): Flow<List<Exercise>> = dao.getByCategory(category)
 
@@ -19,12 +16,7 @@ class ExerciseRepository(
         dao.insertIfAbsent(SeedData.GYM_EXERCISES + SeedData.FLOW_EXERCISES)
     }
 
-    suspend fun addCustomExercise(exercise: Exercise) {
-        dao.upsert(exercise.copy(isCustom = true))
-        try {
-            syncManager.pushExercise(exercise.copy(isCustom = true))
-        } catch (e: Exception) { e.printStackTrace() }
-    }
+    suspend fun addCustomExercise(exercise: Exercise) = dao.upsert(exercise)
 
     suspend fun deleteExercise(exercise: Exercise) = dao.delete(exercise)
 }

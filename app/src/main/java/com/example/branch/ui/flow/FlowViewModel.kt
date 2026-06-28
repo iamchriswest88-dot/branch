@@ -69,8 +69,8 @@ class FlowViewModel(
                 val app = this[APPLICATION_KEY] as BranchApplication
                 val db  = app.database
                 FlowViewModel(
-                    workoutRepo = WorkoutRepository(db.workoutDao(), db.stepDao(), app.syncManager),
-                    doneRepo    = DoneRepository(db.doneDao(), app.syncManager),
+                    workoutRepo = WorkoutRepository(db.workoutDao(), db.stepDao()),
+                    doneRepo    = DoneRepository(db.doneDao()),
                     planRepo    = PlanRepository(db.planDao()),
                     prefs       = BranchPrefs(app),
                 )

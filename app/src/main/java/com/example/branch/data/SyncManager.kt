@@ -1,64 +1,191 @@
 package com.example.branch.data
 
-import com.example.branch.data.model.DoneLog
 import com.example.branch.data.model.Exercise
 import com.example.branch.data.model.Step
 import com.example.branch.data.model.Workout
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.realtime.Realtime
-import io.github.jan.supabase.realtime.PostgresAction
-import io.github.jan.supabase.realtime.channel
-import io.github.jan.supabase.realtime.postgresChangeFlow
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import java.net.HttpURLConnection
+import java.net.URL
 
 class SyncManager(private val db: BranchDatabase) {
-    val supabase = createSupabaseClient(
-        supabaseUrl = "https://mzgfgzojgfjeivlxtflg.supabase.co",
-        supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16Z2Znem9qZ2ZqZWl2bHh0ZmxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NjY5MjEsImV4cCI6MjA5ODI0MjkyMX0.0lWv-cK0orLWTuiVC5rzGcDtQADhxFthqZKPuFl1uzI"
-    ) {
-        install(Postgrest)
-        install(Realtime)
-    }
+    private val SUPABASE_URL = "https://mzgfgzojgfjeivlxtflg.supabase.co"
+    private val SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16Z2Znem9qZ2ZqZWl2bHh0ZmxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NjY5MjEsImV4cCI6MjA5ODI0MjkyMX0.0lWv-cK0orLWTuiVC5rzGcDtQADhxFthqZKPuFl1uzI"
 
-    fun startRealtimeSync(scope: CoroutineScope) {
-        scope.launch(Dispatchers.IO) {
-            val channel = supabase.channel("public-db-changes")
-            
-            // Listen to all inserts in public schema
-            channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public")
-                .onEach { action ->
-                    when (action.table) {
-                        "exercises" -> db.exerciseDao().upsert(action.decodeRecord<Exercise>())
-                        "workouts" -> db.workoutDao().upsert(action.decodeRecord<Workout>())
-                        "steps" -> db.stepDao().upsertAll(listOf(action.decodeRecord<Step>()))
-                        "done_log" -> db.doneDao().insert(action.decodeRecord<DoneLog>())
-                    }
-                }
-                .launchIn(scope)
+    suspend fun syncFromCloud(): Boolean = withContext(Dispatchers.IO) {
+        try {
+            // 1. Fetch Exercises
+            val exJson = fetchFromSupabase("/rest/v1/exercises")
+            val exArray = JSONArray(exJson)
+            for (i in 0 until exArray.length()) {
+                val obj = exArray.getJSONObject(i)
+                db.exerciseDao().insert(
+                    Exercise(
+                        id = obj.getString("id"),
+                        name = obj.getString("name"),
+                        area = obj.getString("area"),
+                        category = obj.getString("category"),
+                        isCustom = obj.optBoolean("is_custom", true) // Note: Supabase uses is_custom
+                    )
+                )
+            }
 
-            channel.subscribe()
+            // 2. Fetch Workouts
+            val woJson = fetchFromSupabase("/rest/v1/workouts")
+            val woArray = JSONArray(woJson)
+            for (i in 0 until woArray.length()) {
+                val obj = woArray.getJSONObject(i)
+                db.workoutDao().insert(
+                    Workout(
+                        id = obj.getString("id"),
+                        name = obj.getString("name"),
+                        category = obj.getString("category")
+                    )
+                )
+            }
+
+            // 3. Fetch Steps
+            val stepJson = fetchFromSupabase("/rest/v1/steps")
+            val stepArray = JSONArray(stepJson)
+            for (i in 0 until stepArray.length()) {
+                val obj = stepArray.getJSONObject(i)
+                db.stepDao().insert(
+                    Step(
+                        id = obj.getString("id"),
+                        workoutId = obj.getString("workout_id"),
+                        exerciseId = obj.getString("exercise_id"),
+                        exerciseName = obj.getString("exercise_name"),
+                        sets = obj.getInt("sets"),
+                        workSec = obj.getInt("work_sec"),
+                        restSec = obj.getInt("rest_sec"),
+                        sides = obj.optBoolean("sides", false),
+                        swapSec = obj.optInt("swap_sec", 5),
+                        sortOrder = obj.getInt("sort_order")
+                    )
+                )
+            }
+            // 4. Fetch DoneLogs
+            val doneJson = fetchFromSupabase("/rest/v1/done_log")
+            val doneArray = JSONArray(doneJson)
+            for (i in 0 until doneArray.length()) {
+                val obj = doneArray.getJSONObject(i)
+                db.doneDao().insert(
+                    com.example.branch.data.model.DoneLog(
+                        id = obj.getString("id"),
+                        category = obj.getString("category"),
+                        dateKey = obj.getString("date_key")
+                    )
+                )
+            }
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 
-    suspend fun pushExercise(exercise: Exercise) {
-        supabase.postgrest["exercises"].upsert(exercise)
+    suspend fun syncToCloud(): Boolean = withContext(Dispatchers.IO) {
+        try {
+            // 1. Push Exercises
+            val exercises = db.exerciseDao().getAllSync()
+            if (exercises.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                exercises.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("id", it.id)
+                    obj.put("name", it.name)
+                    obj.put("area", it.area)
+                    obj.put("category", it.category)
+                    obj.put("is_custom", it.isCustom)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/exercises", jsonArray.toString())
+            }
+
+            // 2. Push Workouts
+            val workouts = db.workoutDao().getAllSync()
+            if (workouts.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                workouts.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("id", it.id)
+                    obj.put("name", it.name)
+                    obj.put("category", it.category)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/workouts", jsonArray.toString())
+            }
+
+            // 3. Push Steps
+            val steps = db.stepDao().getAllSync()
+            if (steps.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                steps.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("id", it.id)
+                    obj.put("workout_id", it.workoutId)
+                    obj.put("exercise_id", it.exerciseId)
+                    obj.put("exercise_name", it.exerciseName)
+                    obj.put("sets", it.sets)
+                    obj.put("work_sec", it.workSec)
+                    obj.put("rest_sec", it.restSec)
+                    obj.put("sides", it.sides)
+                    obj.put("swap_sec", it.swapSec)
+                    obj.put("sort_order", it.sortOrder)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/steps", jsonArray.toString())
+            }
+
+            // 4. Push DoneLogs
+            val doneLogs = db.doneDao().getAllSync()
+            if (doneLogs.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                doneLogs.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("id", it.id)
+                    obj.put("category", it.category)
+                    obj.put("date_key", it.dateKey)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/done_log", jsonArray.toString())
+            }
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
-    suspend fun pushWorkout(workout: Workout) {
-        supabase.postgrest["workouts"].upsert(workout)
+    private fun fetchFromSupabase(endpoint: String): String {
+        val url = URL("$SUPABASE_URL$endpoint")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "GET"
+        connection.setRequestProperty("apikey", SUPABASE_KEY)
+        connection.setRequestProperty("Authorization", "Bearer $SUPABASE_KEY")
+        connection.setRequestProperty("Content-Type", "application/json")
+        
+        return connection.inputStream.bufferedReader().use { it.readText() }
     }
 
-    suspend fun pushSteps(steps: List<Step>) {
-        supabase.postgrest["steps"].upsert(steps)
-    }
-
-    suspend fun pushDoneLog(doneLog: DoneLog) {
-        supabase.postgrest["done_log"].upsert(doneLog)
+    private fun pushToSupabase(endpoint: String, jsonBody: String) {
+        val url = URL("$SUPABASE_URL$endpoint")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "POST"
+        connection.setRequestProperty("apikey", SUPABASE_KEY)
+        connection.setRequestProperty("Authorization", "Bearer $SUPABASE_KEY")
+        connection.setRequestProperty("Content-Type", "application/json")
+        connection.setRequestProperty("Prefer", "resolution=merge-duplicates")
+        connection.doOutput = true
+        
+        connection.outputStream.use { os ->
+            val input = jsonBody.toByteArray(Charsets.UTF_8)
+            os.write(input, 0, input.size)
+        }
+        
+        // Ensure request is sent
+        connection.responseCode
     }
 }

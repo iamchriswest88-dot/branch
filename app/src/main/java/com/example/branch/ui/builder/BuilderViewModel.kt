@@ -125,8 +125,8 @@ class BuilderViewModel(
                 BuilderViewModel(
                     category          = category,
                     existingWorkoutId = workoutId,
-                    workoutRepo       = WorkoutRepository(db.workoutDao(), db.stepDao(), app.syncManager),
-                    exerciseRepo      = ExerciseRepository(db.exerciseDao(), app.syncManager),
+                    workoutRepo       = WorkoutRepository(db.workoutDao(), db.stepDao()),
+                    exerciseRepo      = ExerciseRepository(db.exerciseDao()),
                 )
             }
         }
