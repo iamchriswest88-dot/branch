@@ -12,9 +12,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.ui.NavDisplay
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.branch.theme.*
 import com.example.branch.ui.builder.BuilderScreen
 import com.example.branch.ui.flow.FlowScreen
@@ -26,35 +27,40 @@ import com.example.branch.ui.runner.RunnerScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 
+import androidx.compose.foundation.layout.fillMaxSize
+
 @Composable
 fun MainNavigation() {
-    val backStack = rememberNavBackStack(MainScaffold)
-    NavDisplay(
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryProvider = entryProvider {
-            entry<MainScaffold> {
-                BranchScaffold(
-                    onNewWorkout  = { cat -> backStack.add(BuilderNav(cat)) },
-                    onEditWorkout = { cat, id -> backStack.add(BuilderNav(cat, id)) },
-                    onRunWorkout  = { id -> backStack.add(RunnerNav(id)) }
-                )
-            }
-            entry<BuilderNav> { key ->
-                BuilderScreen(
-                    category  = key.category,
-                    workoutId = key.workoutId.ifEmpty { null },
-                    onBack    = { backStack.removeLastOrNull() }
-                )
-            }
-            entry<RunnerNav> { key ->
-                RunnerScreen(
-                    workoutId = key.workoutId,
-                    onBack    = { backStack.removeLastOrNull() }
-                )
-            }
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController, 
+        startDestination = "main_scaffold",
+        modifier = Modifier.fillMaxSize()
+    ) {
+        composable("main_scaffold") {
+            BranchScaffold(
+                onNewWorkout  = { cat -> navController.navigate("builder/$cat") },
+                onEditWorkout = { cat, id -> navController.navigate("builder/$cat?workoutId=$id") },
+                onRunWorkout  = { id -> navController.navigate("runner/$id") }
+            )
         }
-    )
+        composable("builder/{category}?workoutId={workoutId}") { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: "gym"
+            val workoutId = backStackEntry.arguments?.getString("workoutId")
+            BuilderScreen(
+                category  = category,
+                workoutId = workoutId,
+                onBack    = { navController.popBackStack() }
+            )
+        }
+        composable("runner/{workoutId}") { backStackEntry ->
+            val workoutId = backStackEntry.arguments?.getString("workoutId") ?: ""
+            RunnerScreen(
+                workoutId = workoutId,
+                onBack    = { navController.popBackStack() }
+            )
+        }
+    }
 }
 
 private val TAB_LABELS = listOf("Gym", "Flow", "Hub", "Plan", "Library")
@@ -76,6 +82,7 @@ fun BranchScaffold(
     val haptic = LocalHapticFeedback.current
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         containerColor = NothingBg,
         bottomBar = {
             NavigationBar(
@@ -115,7 +122,11 @@ fun BranchScaffold(
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+        android.util.Log.d("BranchApp", "BranchScaffold composed with innerPadding: $innerPadding")
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize().onSizeChanged { 
+            android.util.Log.d("BranchApp", "BranchScaffold Box size: $it") 
+        }) {
+            android.util.Log.d("BranchApp", "Box composed, selectedTab is $selectedTab")
             when (selectedTab) {
                 0 -> GymScreen(
                     onNewWorkout  = { onNewWorkout("gym") },

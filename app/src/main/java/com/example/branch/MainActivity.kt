@@ -3,12 +3,12 @@ package com.example.branch
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.branch.theme.BranchTheme
+import com.example.branch.ui.MainNavigation
 
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
@@ -17,21 +17,24 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    enableEdgeToEdge()
     setContent {
-      BranchTheme { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { MainNavigation() } }
+      BranchTheme {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+          MainNavigation()
+        }
+      }
     }
   }
 
   override fun onResume() {
     super.onResume()
-    // lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-    //   try {
-    //     val app = application as BranchApplication
-    //     app.syncManager.syncToCloud()
-    //     app.syncManager.syncFromCloud()
-    //   } catch (e: Exception) { e.printStackTrace() }
-    // }
+    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+      try {
+        val app = application as BranchApplication
+        app.syncManager.syncToCloud()
+        app.syncManager.syncFromCloud()
+      } catch (e: Exception) { e.printStackTrace() }
+    }
   }
 
   override fun onPause() {
