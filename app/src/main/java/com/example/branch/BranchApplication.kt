@@ -17,17 +17,6 @@ class BranchApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         scheduleDailyStreakWork()
-        
-        // Start Automatic Background Sync Polling
-        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-            while (true) {
-                try {
-                    syncManager.syncToCloud()
-                    syncManager.syncFromCloud()
-                } catch (e: Exception) { e.printStackTrace() }
-                kotlinx.coroutines.delay(5000) // Sync every 5 seconds
-            }
-        }
     }
 
     private fun scheduleDailyStreakWork() {
