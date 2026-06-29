@@ -258,13 +258,33 @@ window.fetchPlanData = async function(offset = 0) {
         else if (hasGym) type = 'gym';
         else if (hasFlow) type = 'flow';
 
+        const isRest = type === 'rest';
+        
+        let titleText = "Rest";
+        if (hasGym && hasFlow) titleText = "Gym & Flow";
+        else if (hasGym) titleText = "Gym Workout";
+        else if (hasFlow) titleText = "Flow Session";
+
         weekDays.push({
             dateKey,
             dayLabel,
             type,
             hasGym,
             hasFlow,
-            isRest: type === 'rest'
+            isRest,
+            titleText,
+            gymBg: hasGym ? '#9B5CF0' : 'transparent',
+            gymColor: hasGym ? '#0A0A0A' : '#8A8A8A',
+            gymBorder: hasGym ? '#9B5CF0' : '#262626',
+            flowBg: hasFlow ? '#4FC4F0' : 'transparent',
+            flowColor: hasFlow ? '#0A0A0A' : '#8A8A8A',
+            flowBorder: hasFlow ? '#4FC4F0' : '#262626',
+            restBg: isRest ? '#EDEDED' : 'transparent',
+            restColor: isRest ? '#0A0A0A' : '#8A8A8A',
+            restBorder: isRest ? '#EDEDED' : '#262626',
+            rowBg: isRest ? 'transparent' : 'linear-gradient(90deg, rgba(30,30,30,0.4), transparent)',
+            dateColor: isRest ? '#5A5A5A' : '#EDEDED',
+            titleColor: isRest ? '#3A3A3A' : '#EDEDED'
         });
     }
 

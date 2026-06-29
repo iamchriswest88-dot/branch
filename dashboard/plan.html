@@ -66,27 +66,22 @@
       
       <div style="display:flex;flex-direction:column;gap:12px;flex:1;overflow-y:auto;padding-right:8px;">
         <sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
-          <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #262626;border-radius:12px;padding:14px 20px;background:{{ d.isRest ? 'transparent' : 'linear-gradient(90deg, rgba(30,30,30,0.4), transparent)' }};">
+          <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #262626;border-radius:12px;padding:14px 20px;background:{{ d.rowBg }};">
             
             <div style="display:flex;flex-direction:column;">
-              <div style="font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:1px;color:{{ d.isRest ? '#5A5A5A' : '#EDEDED' }};margin-bottom:4px;">{{ d.dayLabel }}</div>
-              <div style="font-family:'NType82',sans-serif;font-size:20px;color:{{ d.isRest ? '#3A3A3A' : '#EDEDED' }};">
-                <sc-if value="{{ d.hasGym && d.hasFlow }}">Gym & Flow</sc-if>
-                <sc-if value="{{ d.hasGym && !d.hasFlow }}">Gym Workout</sc-if>
-                <sc-if value="{{ !d.hasGym && d.hasFlow }}">Flow Session</sc-if>
-                <sc-if value="{{ !d.hasGym && !d.hasFlow }}">Rest</sc-if>
-              </div>
+              <div style="font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:1px;color:{{ d.dateColor }};margin-bottom:4px;">{{ d.dayLabel }}</div>
+              <div style="font-family:'NType82',sans-serif;font-size:20px;color:{{ d.titleColor }};">{{ d.titleText }}</div>
             </div>
 
             <div style="display:flex;align-items:center;gap:8px;">
               <!-- Gym Button -->
-              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="gym" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.hasGym ? '#9B5CF0' : '#262626' }};background:{{ d.hasGym ? '#9B5CF0' : 'transparent' }};color:{{ d.hasGym ? '#0A0A0A' : '#8A8A8A' }};transition:all 0.2s;">GYM</div>
+              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="gym" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.gymBorder }};background:{{ d.gymBg }};color:{{ d.gymColor }};transition:all 0.2s;">GYM</div>
               
               <!-- Flow Button -->
-              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="flow" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.hasFlow ? '#4FC4F0' : '#262626' }};background:{{ d.hasFlow ? '#4FC4F0' : 'transparent' }};color:{{ d.hasFlow ? '#0A0A0A' : '#8A8A8A' }};transition:all 0.2s;">FLOW</div>
+              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="flow" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.flowBorder }};background:{{ d.flowBg }};color:{{ d.flowColor }};transition:all 0.2s;">FLOW</div>
               
               <!-- Rest Button -->
-              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="rest" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.isRest ? '#EDEDED' : '#262626' }};background:{{ d.isRest ? '#EDEDED' : 'transparent' }};color:{{ d.isRest ? '#0A0A0A' : '#8A8A8A' }};transition:all 0.2s;">REST</div>
+              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="rest" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.restBorder }};background:{{ d.restBg }};color:{{ d.restColor }};transition:all 0.2s;">REST</div>
             </div>
 
           </div>
