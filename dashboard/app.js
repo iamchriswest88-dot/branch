@@ -500,3 +500,11 @@ document.addEventListener('click', (e) => {
         window.builderComponent.save();
     }
 });
+
+document.addEventListener('input', (e) => {
+    if (e.target.matches('[data-action="update-name"]')) {
+        if (window.builderComponent) {
+            window.builderComponent.state.workoutName = e.target.value;
+        }
+    }
+});
