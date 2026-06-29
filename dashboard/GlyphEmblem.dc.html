@@ -1,0 +1,59 @@
+<x-dc>
+  <div style="width:260px;height:260px;position:relative;display:flex;align-items:center;justify-content:center;">
+    
+    <!-- Background Track -->
+    <svg width="260" height="260" viewBox="0 0 260 260" style="transform:rotate(-90deg);">
+      <circle cx="130" cy="130" r="110" fill="none" stroke="#1A1A1A" stroke-width="20" stroke-dasharray="105 10" />
+    </svg>
+    
+    <!-- Foreground (Filled) -->
+    <svg width="260" height="260" viewBox="0 0 260 260" style="transform:rotate(-90deg);position:absolute;top:0;left:0;">
+      <circle cx="130" cy="130" r="110" fill="none" stroke="{{ accent }}" stroke-width="20" stroke-dasharray="{{ dashArray }}" style="transition:all 0.6s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 0 8px {{ accent }});" />
+    </svg>
+    
+    <!-- Center text -->
+    <div style="position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div style="font-family:'Lettera Mono',monospace;font-size:32px;font-weight:bold;color:{{ accent }};line-height:1;text-shadow: 0 0 12px {{ accent }};">
+        {{ filled }}
+      </div>
+      <div style="font-family:'Lettera Mono',monospace;font-size:12px;color:#8A8A8A;margin-top:4px;letter-spacing:2px;">
+        STREAK
+      </div>
+    </div>
+  </div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const filledStr = String(this.props.filled || "0");
+    const filled = parseInt(filledStr) || 0;
+    const accent = this.props.accent || '#FFFFFF';
+    
+    // Circle circumference = 2 * PI * 110 ≈ 691.15
+    // We have 6 segments, each separated by a 10px gap.
+    // Total gap = 6 * 10 = 60.
+    // Total segment space = 691.15 - 60 = 631.15
+    // Each segment = 631.15 / 6 ≈ 105.19
+    // So stroke-dasharray="105 10" is perfect for 6 segments.
+    // To fill N segments, we show N segments and hide the rest.
+    // To show exactly N segments, the visible dash length should be:
+    // (105 * N) + (10 * (N - 1))
+    
+    const circ = 691.15;
+    let dash = 0;
+    if (filled > 0) {
+        dash = (105 * filled) + (10 * (filled - 1));
+    }
+    
+    // The dashArray pattern is: [visible length, remaining circumference]
+    const dashArray = `${dash} ${circ}`;
+
+    return {
+      filled,
+      accent,
+      dashArray
+    };
+  }
+}
+</script>
