@@ -64,7 +64,7 @@
         <div style="background:#0D0D0D;border:1px solid #262626;border-radius:16px;padding:20px;display:flex;align-items:center;gap:20px;">
           <div style="flex:1;border:1px solid #2A2233;border-radius:10px;padding:13px 16px;background:linear-gradient(180deg,rgba(155,92,240,0.05),transparent);">
             <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:2px;color:#9B5CF0;">WORKOUT NAME</div>
-            <div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><input style="font-family:'Space Grotesk',sans-serif;font-size:19px;color:#EDEDED;background:transparent;border:none;outline:none;" value="{{ workoutName }}" data-action="update-name"><span style="width:2px;height:19px;background:#9B5CF0;"></span></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><input style="font-family:'Space Grotesk',sans-serif;font-size:19px;color:#EDEDED;background:transparent;border:none;outline:none;" value="{{ workoutName }}" oninput="{{ handleNameChange }}"><span style="width:2px;height:19px;background:#9B5CF0;"></span></div>
           </div>
           <div style="display:flex;gap:26px;padding-right:6px;">
             <div><div style="font-family:'Lettera Mono',monospace;font-size:20px;color:#EDEDED;">{{ estMin }}</div><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:3px;">EST. MIN</div></div>
@@ -92,7 +92,7 @@
               </div>
             </div>
           </sc-for>
-          <div style="border:1px dashed #333;border-radius:14px;padding:16px;text-align:center;font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:2px;color:#8A8A8A;">+ ADD STEP</div>
+          <div style="border:1px dashed #333;border-radius:14px;padding:16px;text-align:center;font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:2px;color:#8A8A8A;">SELECT EXERCISES FROM LIBRARY ➔</div>
         </div>
       </div>
 
@@ -192,6 +192,11 @@ class Component extends DCLogic {
     });
   }
 
+  handleNameChange = (e) => {
+    this.state.workoutName = e.target.value;
+    this.forceUpdate();
+  }
+
   renderVals() {
     const steps = this.state.rawSteps.map((s, i) => {
       const counters = [
@@ -224,7 +229,8 @@ class Component extends DCLogic {
       totalSets, 
       estMin, 
       stepCount: this.state.rawSteps.length,
-      workoutName: this.state.workoutName 
+      workoutName: this.state.workoutName,
+      handleNameChange: this.handleNameChange
     };
   }
 }

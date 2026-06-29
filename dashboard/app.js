@@ -501,10 +501,3 @@ document.addEventListener('click', (e) => {
     }
 });
 
-document.addEventListener('input', (e) => {
-    if (e.target.matches('[data-action="update-name"]')) {
-        if (window.builderComponent) {
-            window.builderComponent.state.workoutName = e.target.value;
-        }
-    }
-});
