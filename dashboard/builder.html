@@ -102,12 +102,12 @@
           <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;">EXERCISE LIBRARY</div>
           <div style="margin-top:12px;border:1px solid #262626;border-radius:20px;padding:9px 14px;display:flex;align-items:center;gap:9px;"><span style="color:#5A5A5A;font-size:13px;">⌕</span><span style="font-family:'Lettera Mono',monospace;font-size:11px;color:#5A5A5A;">Search exercises…</span></div>
           <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;">
-            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#0A0A0A;background:#9B5CF0;border-radius:12px;padding:5px 11px;">ALL</span>
-            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">CHEST</span>
-            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">BACK</span>
-            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">SHOULDERS</span>
-            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">CORE</span>
-            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">QUADS</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'ALL' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'ALL' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'ALL' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('ALL') }}">ALL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'BODYWEIGHT' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'BODYWEIGHT' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'BODYWEIGHT' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('BODYWEIGHT') }}">BODYWEIGHT</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'DUMBBELL' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'DUMBBELL' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'DUMBBELL' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('DUMBBELL') }}">DUMBBELL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'KETTLEBELL' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'KETTLEBELL' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'KETTLEBELL' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('KETTLEBELL') }}">KETTLEBELL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'BARBELL' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'BARBELL' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'BARBELL' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('BARBELL') }}">BARBELL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'CABLE' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'CABLE' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'CABLE' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('CABLE') }}">CABLE</span>
           </div>
         </div>
         <div style="flex:1;overflow:hidden;border-top:1px solid #1b1b1b;">
@@ -136,7 +136,8 @@ class Component extends DCLogic {
       library: [], 
       rawSteps: [],
       workoutName: 'New Workout',
-      workoutCategory: 'gym'
+      workoutCategory: 'gym',
+      filterEquipment: 'ALL'
     };
     window.builderComponent = this;
   }
@@ -197,6 +198,10 @@ class Component extends DCLogic {
     this.forceUpdate();
   }
 
+  setEquipmentFilter = (eq) => {
+    this.setState({ filterEquipment: eq });
+  }
+
   renderVals() {
     const steps = this.state.rawSteps.map((s, i) => {
       const counters = [
@@ -222,15 +227,22 @@ class Component extends DCLogic {
     const totalSets = this.state.rawSteps.reduce((a, s) => a + s.sets, 0);
     const estSec = this.state.rawSteps.reduce((a, s) => a + s.sets * (s.work + s.rest) * (s.both ? 2 : 1), 0);
     const estMin = Math.max(1, Math.round(estSec / 60));
+
+    let filteredLibrary = this.state.library;
+    if (this.state.filterEquipment !== 'ALL') {
+      filteredLibrary = filteredLibrary.filter(e => (e.equipment || 'Bodyweight').toUpperCase() === this.state.filterEquipment);
+    }
     
     return { 
       steps, 
-      library: this.state.library, 
+      library: filteredLibrary, 
       totalSets, 
       estMin, 
       stepCount: this.state.rawSteps.length,
       workoutName: this.state.workoutName,
-      handleNameChange: this.handleNameChange
+      handleNameChange: this.handleNameChange,
+      filterEquipment: this.state.filterEquipment,
+      setEquipmentFilter: this.setEquipmentFilter
     };
   }
 }

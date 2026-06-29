@@ -58,6 +58,14 @@
 
     <!-- exercises list -->
     <div style="background:#0D0D0D;border:1px solid #262626;border-radius:16px;overflow:hidden;flex:1;display:flex;flex-direction:column;">
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;padding:0 22px 12px;">
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'ALL' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'ALL' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'ALL' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('ALL') }}">ALL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'BODYWEIGHT' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'BODYWEIGHT' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'BODYWEIGHT' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('BODYWEIGHT') }}">BODYWEIGHT</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'DUMBBELL' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'DUMBBELL' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'DUMBBELL' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('DUMBBELL') }}">DUMBBELL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'KETTLEBELL' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'KETTLEBELL' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'KETTLEBELL' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('KETTLEBELL') }}">KETTLEBELL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'BARBELL' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'BARBELL' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'BARBELL' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('BARBELL') }}">BARBELL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:{{ filterEquipment === 'CABLE' ? '#0A0A0A' : '#8A8A8A' }};background:{{ filterEquipment === 'CABLE' ? '#9B5CF0' : 'transparent' }};border:1px solid {{ filterEquipment === 'CABLE' ? 'transparent' : '#262626' }};border-radius:12px;padding:5px 11px;cursor:pointer;" onclick="{{ () => this.setEquipmentFilter('CABLE') }}">CABLE</span>
+          </div>
       <!-- GYM -->
       <div style="padding:18px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:#0F0F0F;" data-action="toggle-lib-gym">
         <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#9B5CF0;">GYM EXERCISES ({{ gymCount }})</div>
@@ -77,7 +85,7 @@
                   <td style="padding:14px 22px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#EDEDED;">{{ ex.name }}</td>
                   <td style="padding:14px 16px;font-family:'Lettera Mono',monospace;font-size:12.5px;color:#8A8A8A;">{{ ex.area }}</td>
                   <td style="padding:14px 22px;text-align:right;font-size:16px;">
-                    <span style="cursor:pointer;color:#8A8A8A;margin-right:12px;display:inline-block;" data-action="edit-exercise" data-id="{{ ex.id }}" data-name="{{ ex.name }}" data-area="{{ ex.area }}" data-category="gym">✎</span>
+                    <span style="cursor:pointer;color:#8A8A8A;margin-right:12px;display:inline-block;" data-action="edit-exercise" data-id="{{ ex.id }}" data-name="{{ ex.name }}" data-area="{{ ex.area }}" data-equipment="{{ ex.equipment }}" data-category="gym">✎</span>
                     <span style="cursor:pointer;color:#E5484D;display:inline-block;" data-action="delete-exercise" data-id="{{ ex.id }}" data-name="{{ ex.name }}">×</span>
                   </td>
                 </tr>
@@ -106,7 +114,7 @@
                   <td style="padding:14px 22px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#EDEDED;">{{ ex.name }}</td>
                   <td style="padding:14px 16px;font-family:'Lettera Mono',monospace;font-size:12.5px;color:#8A8A8A;">{{ ex.area }}</td>
                   <td style="padding:14px 22px;text-align:right;font-size:16px;">
-                    <span style="cursor:pointer;color:#8A8A8A;margin-right:12px;display:inline-block;" data-action="edit-exercise" data-id="{{ ex.id }}" data-name="{{ ex.name }}" data-area="{{ ex.area }}" data-category="flow">✎</span>
+                    <span style="cursor:pointer;color:#8A8A8A;margin-right:12px;display:inline-block;" data-action="edit-exercise" data-id="{{ ex.id }}" data-name="{{ ex.name }}" data-area="{{ ex.area }}" data-equipment="{{ ex.equipment }}" data-category="flow">✎</span>
                     <span style="cursor:pointer;color:#E5484D;display:inline-block;" data-action="delete-exercise" data-id="{{ ex.id }}" data-name="{{ ex.name }}">×</span>
                   </td>
                 </tr>
@@ -126,7 +134,7 @@
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { exercises: [], openAccordion: 'gym' };
+    this.state = { exercises: [], openAccordion: 'gym', filterEquipment: 'ALL' };
     window.libraryComponent = this;
   }
   
@@ -138,11 +146,20 @@ class Component extends DCLogic {
     this.setState({ openAccordion: this.state.openAccordion === cat ? null : cat });
   }
 
-  renderVals() {
-    const gym = this.state.exercises.filter(e => e.category === 'gym');
-    const flow = this.state.exercises.filter(e => e.category === 'flow');
+  setEquipmentFilter = (eq) => {
+    this.setState({ filterEquipment: eq });
+  }
 
-    const formatEx = e => ({ id: e.id, name: e.name, area: e.area ? e.area.toUpperCase() : 'UNKNOWN' });
+  renderVals() {
+    let gym = this.state.exercises.filter(e => e.category === 'gym');
+    let flow = this.state.exercises.filter(e => e.category === 'flow');
+
+    if (this.state.filterEquipment !== 'ALL') {
+      gym = gym.filter(e => (e.equipment || 'Bodyweight').toUpperCase() === this.state.filterEquipment);
+      flow = flow.filter(e => (e.equipment || 'Bodyweight').toUpperCase() === this.state.filterEquipment);
+    }
+
+    const formatEx = e => ({ id: e.id, name: e.name, area: e.area ? e.area.toUpperCase() : 'UNKNOWN', equipment: e.equipment || 'Bodyweight' });
     
     return {
       gymExercises: gym.map(formatEx),
@@ -150,7 +167,9 @@ class Component extends DCLogic {
       gymCount: gym.length,
       flowCount: flow.length,
       isGymOpen: this.state.openAccordion === 'gym',
-      isFlowOpen: this.state.openAccordion === 'flow'
+      isFlowOpen: this.state.openAccordion === 'flow',
+      filterEquipment: this.state.filterEquipment,
+      setEquipmentFilter: this.setEquipmentFilter
     };
   }
 }

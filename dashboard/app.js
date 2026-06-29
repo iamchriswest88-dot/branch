@@ -138,12 +138,12 @@ window.fetchBuilderData = async function() {
 
     const library = exercises || [];
     
-    // Convert library for UI
     const libraryUi = library.map(ex => ({
         id: ex.id,
         name: ex.name,
         area: ex.area,
-        category: ex.category
+        category: ex.category,
+        equipment: ex.equipment || 'Bodyweight'
     }));
 
     let rawSteps = window.builderComponent.state.rawSteps;
@@ -366,8 +366,9 @@ document.addEventListener('click', (e) => {
         if (!name) return;
         const area = prompt("Enter Target Area (e.g., Chest, Quads):", "Full Body");
         const category = prompt("Enter Category (gym or flow):", "gym");
+        const equipment = prompt("Enter Equipment Type (e.g., Bodyweight, Dumbbell, Kettlebell):", "Bodyweight");
         
-        db.from('exercises').insert([{ name, area, category, is_custom: true }])
+        db.from('exercises').insert([{ name, area, category, equipment, is_custom: true }])
           .then(({ error }) => {
               if (error) alert("Error: " + error.message);
               else if (window.fetchLibraryData) window.fetchLibraryData();
@@ -393,8 +394,9 @@ document.addEventListener('click', (e) => {
         if (!name) return;
         const area = prompt("Edit Target Area:", btn.dataset.area);
         const category = prompt("Edit Category (gym or flow):", btn.dataset.category);
+        const equipment = prompt("Edit Equipment Type:", btn.dataset.equipment || 'Bodyweight');
         
-        db.from('exercises').update({ name, area, category }).eq('id', id).then(({error}) => {
+        db.from('exercises').update({ name, area, category, equipment }).eq('id', id).then(({error}) => {
             if (error) alert("Error: " + error.message);
             else if (window.fetchLibraryData) window.fetchLibraryData();
         });
