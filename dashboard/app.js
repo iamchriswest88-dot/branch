@@ -61,8 +61,8 @@ window.fetchDashboardData = async function() {
     const gymDones = doneLogs.filter(d => d.category === 'gym').map(d => d.date_key);
     const flowDones = doneLogs.filter(d => d.category === 'flow').map(d => d.date_key);
     
-    const gymStreak = window.deriveStreak('gym', planDays, gymDones, todayStr);
-    const flowStreak = window.deriveStreak('flow', planDays, flowDones, todayStr);
+    const gymStreak = String(window.deriveStreak('gym', planDays, gymDones, todayStr));
+    const flowStreak = String(window.deriveStreak('flow', planDays, flowDones, todayStr));
     
     // Find today's plan
     const todayPlan = planDays.find(p => p.date_key === todayStr);
@@ -223,8 +223,10 @@ window.fetchLibraryData = async function() {
     window.libraryComponent.setState({ exercises: exercises || [] });
 };
 
-window.fetchPlanData = async function() {
+window.fetchPlanData = async function(offset = 0) {
     if (!window.planComponent) return;
+    window.planComponent.weekOffset = (window.planComponent.weekOffset || 0) + offset;
+    
     const { data: workouts } = await db.from('workouts').select('*, steps(*)');
     const { data: planDaysData } = await db.from('plan_days').select('*');
     
@@ -235,6 +237,7 @@ window.fetchPlanData = async function() {
     const currentDay = today.getDay(); // 0 is Sunday, 1 is Monday
     const diffToMonday = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
     const monday = new Date(today.setDate(diffToMonday));
+    monday.setDate(monday.getDate() + (window.planComponent.weekOffset * 7));
     
     const weekDays = [];
     const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -255,42 +258,28 @@ window.fetchPlanData = async function() {
         else if (hasGym) type = 'gym';
         else if (hasFlow) type = 'flow';
 
-        let border, bg, accent, title, subtitle, isRest = false;
-
-        if (type === 'gym') {
-            border = '1px solid #2A2233';
-            bg = 'linear-gradient(180deg,rgba(155,92,240,0.07),transparent)';
-            accent = '#C7A8FF';
-            title = 'Gym Workout';
-            subtitle = 'GYM PLANNED';
-        } else if (type === 'flow') {
-            border = '1px solid #1A2733';
-            bg = 'linear-gradient(180deg,rgba(79,196,240,0.07),transparent)';
-            accent = '#A8EEFF';
-            title = 'Flow Session';
-            subtitle = 'FLOW PLANNED';
-        } else if (type === 'both') {
-            border = '1px solid #2A2233';
-            bg = 'linear-gradient(180deg,rgba(155,92,240,0.07),transparent)';
-            accent = '#C7A8FF';
-            title = 'Gym & Flow';
-            subtitle = 'BOTH PLANNED';
-        } else {
-            border = '1px dashed #262626';
-            bg = 'transparent';
-            accent = '#5A5A5A';
-            isRest = true;
-        }
-
         weekDays.push({
             dateKey,
             dayLabel,
             type,
-            border, bg, accent, title, subtitle, isRest
+            hasGym,
+            hasFlow,
+            isRest: type === 'rest'
         });
     }
 
-    window.planComponent.setState({ workouts: workouts || [], weekDays });
+    const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const dateRangeText = `${monthNames[monday.getMonth()]} ${String(monday.getDate()).padStart(2, '0')} - ${monthNames[sunday.getMonth()]} ${String(sunday.getDate()).padStart(2, '0')}`;
+    
+    const weekLabel = window.planComponent.weekOffset === 0 ? 'THIS WEEK' : 
+                      window.planComponent.weekOffset === -1 ? 'LAST WEEK' : 
+                      window.planComponent.weekOffset === 1 ? 'NEXT WEEK' : 
+                      window.planComponent.weekOffset < 0 ? `${Math.abs(window.planComponent.weekOffset)} WEEKS AGO` : 
+                      `IN ${window.planComponent.weekOffset} WEEKS`;
+
+    window.planComponent.setState({ workouts: workouts || [], weekDays, dateRangeText, weekLabel });
 };
 
 window.saveWorkout = async function(workoutObj) {
@@ -417,27 +406,47 @@ document.addEventListener('click', (e) => {
         }
     }
 
-    if (e.target.closest('[data-action="toggle-plan-day"]')) {
-        const el = e.target.closest('[data-action="toggle-plan-day"]');
-        const dateKey = el.dataset.date;
-        const currentType = el.dataset.type; // 'rest', 'gym', 'flow', 'both'
+    if (e.target.closest('[data-action="prev-week"]')) {
+        if (window.fetchPlanData) window.fetchPlanData(-1);
+    }
+    
+    if (e.target.closest('[data-action="next-week"]')) {
+        if (window.fetchPlanData) window.fetchPlanData(1);
+    }
 
-        let newType = 'gym';
-        if (currentType === 'rest') newType = 'gym';
-        else if (currentType === 'gym') newType = 'flow';
-        else if (currentType === 'flow') newType = 'both';
-        else newType = 'rest';
+    if (e.target.closest('[data-action="set-plan"]')) {
+        const btn = e.target.closest('[data-action="set-plan"]');
+        const dateKey = btn.dataset.date;
+        const type = btn.dataset.type; // 'gym', 'flow', 'rest'
+
+        // First find the current day's plan from the component state
+        const weekDays = window.planComponent?.state?.weekDays || [];
+        const currentDay = weekDays.find(d => d.dateKey === dateKey);
+        
+        if (!currentDay) return;
+        
+        let hasGym = currentDay.hasGym;
+        let hasFlow = currentDay.hasFlow;
+        
+        if (type === 'rest') {
+            hasGym = false;
+            hasFlow = false;
+        } else if (type === 'gym') {
+            hasGym = !hasGym; // Toggle
+        } else if (type === 'flow') {
+            hasFlow = !hasFlow; // Toggle
+        }
 
         const payload = {
             date_key: dateKey,
-            has_gym: newType === 'gym' || newType === 'both',
-            has_flow: newType === 'flow' || newType === 'both',
-            has_rest: newType === 'rest'
+            has_gym: hasGym,
+            has_flow: hasFlow,
+            has_rest: (!hasGym && !hasFlow)
         };
 
         db.from('plan_days').upsert(payload).then(({error}) => {
             if (error) alert("Error: " + error.message);
-            else if (window.fetchPlanData) window.fetchPlanData();
+            else if (window.fetchPlanData) window.fetchPlanData(0); // keep offset
         });
     }
 

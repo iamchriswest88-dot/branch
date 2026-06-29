@@ -49,31 +49,46 @@
     <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 4px 0;">
       <div>
         <div style="font-family:'NType82',sans-serif;font-size:28px;letter-spacing:-0.5px;color:#EDEDED;line-height:1;">Plan</div>
-        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;margin-top:7px;">ALL SAVED WORKOUTS</div>
+        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;margin-top:7px;">SCHEDULE WORKOUTS</div>
       </div>
     </div>
 
     <!-- weekly calendar -->
     <div style="background:#0D0D0D;border:1px solid #262626;border-radius:16px;overflow:hidden;flex:1;display:flex;flex-direction:column;padding:18px 22px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;">THIS WEEK</div>
-        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#EDEDED;">JUN 29 - JUL 05</div>
+        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;display:flex;align-items:center;gap:12px;">
+           <span style="cursor:pointer;padding:4px 8px;border:1px solid #262626;border-radius:6px;transition:0.2s;user-select:none;" onmouseover="this.style.background='#1A1A1A'" onmouseout="this.style.background='transparent'" data-action="prev-week">&larr;</span>
+           <span style="width:110px;text-align:center;">{{ weekLabel }}</span>
+           <span style="cursor:pointer;padding:4px 8px;border:1px solid #262626;border-radius:6px;transition:0.2s;user-select:none;" onmouseover="this.style.background='#1A1A1A'" onmouseout="this.style.background='transparent'" data-action="next-week">&rarr;</span>
+        </div>
+        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#EDEDED;">{{ dateRangeText }}</div>
       </div>
       
-      <div style="display:grid;grid-template-columns:repeat(7, 1fr);gap:12px;flex:1;">
+      <div style="display:flex;flex-direction:column;gap:12px;flex:1;overflow-y:auto;padding-right:8px;">
         <sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
-          <div style="border:{{ d.border }};border-radius:12px;padding:14px;background:{{ d.bg }};display:flex;flex-direction:column;cursor:pointer;" data-action="toggle-plan-day" data-date="{{ d.dateKey }}" data-type="{{ d.type }}">
-            <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:{{ d.accent }};margin-bottom:8px;align-self:flex-start;">{{ d.dayLabel }}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid #262626;border-radius:12px;padding:14px 20px;background:{{ d.isRest ? 'transparent' : 'linear-gradient(90deg, rgba(30,30,30,0.4), transparent)' }};">
             
-            <div style="display:{{ d.isRest ? 'none' : 'block' }};">
-              <div style="font-family:'NType82',sans-serif;font-size:20px;color:#EDEDED;">{{ d.title }}</div>
-              <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:4px;">{{ d.subtitle }}</div>
+            <div style="display:flex;flex-direction:column;">
+              <div style="font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:1px;color:{{ d.isRest ? '#5A5A5A' : '#EDEDED' }};margin-bottom:4px;">{{ d.dayLabel }}</div>
+              <div style="font-family:'NType82',sans-serif;font-size:20px;color:{{ d.isRest ? '#3A3A3A' : '#EDEDED' }};">
+                <sc-if value="{{ d.hasGym && d.hasFlow }}">Gym & Flow</sc-if>
+                <sc-if value="{{ d.hasGym && !d.hasFlow }}">Gym Workout</sc-if>
+                <sc-if value="{{ !d.hasGym && d.hasFlow }}">Flow Session</sc-if>
+                <sc-if value="{{ !d.hasGym && !d.hasFlow }}">Rest</sc-if>
+              </div>
             </div>
 
-            <div style="display:{{ d.isRest ? 'flex' : 'none' }};flex:1;flex-direction:column;align-items:center;justify-content:center;color:#5A5A5A;">
-              <div style="font-size:24px;">+</div>
-              <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;margin-top:4px;">REST / ADD</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <!-- Gym Button -->
+              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="gym" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.hasGym ? '#9B5CF0' : '#262626' }};background:{{ d.hasGym ? 'rgba(155,92,240,0.1)' : 'transparent' }};color:{{ d.hasGym ? '#C7A8FF' : '#8A8A8A' }};transition:all 0.2s;">GYM</div>
+              
+              <!-- Flow Button -->
+              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="flow" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.hasFlow ? '#4FC4F0' : '#262626' }};background:{{ d.hasFlow ? 'rgba(79,196,240,0.1)' : 'transparent' }};color:{{ d.hasFlow ? '#A8EEFF' : '#8A8A8A' }};transition:all 0.2s;">FLOW</div>
+              
+              <!-- Rest Button -->
+              <div data-action="set-plan" data-date="{{ d.dateKey }}" data-type="rest" style="cursor:pointer;padding:8px 16px;border-radius:20px;font-family:'Lettera Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid {{ d.isRest ? '#EDEDED' : '#262626' }};background:{{ d.isRest ? 'rgba(255,255,255,0.05)' : 'transparent' }};color:{{ d.isRest ? '#EDEDED' : '#8A8A8A' }};transition:all 0.2s;">REST</div>
             </div>
+
           </div>
         </sc-for>
       </div>
@@ -88,12 +103,13 @@
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { workouts: [] };
+    this.state = { workouts: [], weekDays: [], dateRangeText: '', weekLabel: 'THIS WEEK' };
+    this.weekOffset = 0;
     window.planComponent = this;
   }
   
   componentDidMount() {
-    if (window.fetchPlanData) window.fetchPlanData();
+    if (window.fetchPlanData) window.fetchPlanData(0);
   }
 
   renderVals() {
@@ -102,7 +118,12 @@ class Component extends DCLogic {
       category: w.category ? w.category.toUpperCase() : 'UNKNOWN',
       stepCount: w.steps ? w.steps.length : 0
     })) : [];
-    return { workouts, weekDays: this.state.weekDays || [] };
+    return { 
+      workouts, 
+      weekDays: this.state.weekDays || [],
+      dateRangeText: this.state.dateRangeText || '',
+      weekLabel: this.state.weekLabel || 'THIS WEEK'
+    };
   }
 }
 </script>
