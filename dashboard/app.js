@@ -2,7 +2,7 @@
 const SUPABASE_URL = 'https://mzgfgzojgfjeivlxtflg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16Z2Znem9qZ2ZqZWl2bHh0ZmxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NjY5MjEsImV4cCI6MjA5ODI0MjkyMX0.0lWv-cK0orLWTuiVC5rzGcDtQADhxFthqZKPuFl1uzI';
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // State
 let exercises = [];
@@ -52,7 +52,7 @@ async function fetchData() {
     }
     
     // Fetch Exercises
-    const { data: exData, error: exErr } = await supabase.from('exercises').select('*');
+    const { data: exData, error: exErr } = await db.from('exercises').select('*');
     if (!exErr && exData) {
         exercises = exData;
         renderExercises();
@@ -61,7 +61,7 @@ async function fetchData() {
     }
     
     // Fetch Workouts and Steps
-    const { data: woData, error: woErr } = await supabase.from('workouts').select('*, steps(*)');
+    const { data: woData, error: woErr } = await db.from('workouts').select('*, steps(*)');
     if (!woErr && woData) {
         workouts = woData;
         renderWorkouts();
@@ -92,7 +92,7 @@ exerciseForm.addEventListener('submit', async (e) => {
     
     if (!isNew) exPayload.id = id;
 
-    const { error } = await supabase.from('exercises').upsert(exPayload);
+    const { error } = await db.from('exercises').upsert(exPayload);
     if (!error) {
         fetchData();
         closeModal('exercise-modal');
@@ -103,7 +103,7 @@ exerciseForm.addEventListener('submit', async (e) => {
 
 async function deleteExercise(id) {
     if(confirm("Are you sure?")) {
-        await supabase.from('exercises').delete().eq('id', id);
+        await db.from('exercises').delete().eq('id', id);
         fetchData();
     }
 }
@@ -174,7 +174,7 @@ workoutForm.addEventListener('submit', async (e) => {
     };
 
     // Insert Workout first
-    const { data: woData, error: woErr } = await supabase.from('workouts').insert(woPayload).select().single();
+    const { data: woData, error: woErr } = await db.from('workouts').insert(woPayload).select().single();
     
     if (woErr) { alert("Error saving workout"); return; }
     const workoutId = woData.id;
@@ -198,7 +198,7 @@ workoutForm.addEventListener('submit', async (e) => {
     });
 
     if (stepsPayload.length > 0) {
-        await supabase.from('steps').insert(stepsPayload);
+        await db.from('steps').insert(stepsPayload);
     }
 
     fetchData();
@@ -207,7 +207,7 @@ workoutForm.addEventListener('submit', async (e) => {
 
 async function deleteWorkout(id) {
     if(confirm("Are you sure?")) {
-        await supabase.from('workouts').delete().eq('id', id);
+        await db.from('workouts').delete().eq('id', id);
         fetchData();
     }
 }
