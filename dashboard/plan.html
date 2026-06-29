@@ -61,47 +61,21 @@
       </div>
       
       <div style="display:grid;grid-template-columns:repeat(7, 1fr);gap:12px;flex:1;">
-        <!-- MON -->
-        <div style="border:1px solid #2A2233;border-radius:12px;padding:14px;background:linear-gradient(180deg,rgba(155,92,240,0.07),transparent);display:flex;flex-direction:column;">
-          <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#C7A8FF;margin-bottom:8px;">MON 29</div>
-          <div style="font-family:'NType82',sans-serif;font-size:20px;color:#EDEDED;">Push Day</div>
-          <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:4px;">GYM · 45 MIN</div>
-        </div>
-        <!-- TUE -->
-        <div style="border:1px solid #1A2733;border-radius:12px;padding:14px;background:linear-gradient(180deg,rgba(79,196,240,0.07),transparent);display:flex;flex-direction:column;">
-          <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#A8EEFF;margin-bottom:8px;">TUE 30</div>
-          <div style="font-family:'NType82',sans-serif;font-size:20px;color:#EDEDED;">Core Flow</div>
-          <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:4px;">FLOW · 20 MIN</div>
-        </div>
-        <!-- WED -->
-        <div style="border:1px dashed #262626;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#5A5A5A;cursor:pointer;">
-          <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;margin-bottom:8px;align-self:flex-start;">WED 01</div>
-          <div style="font-size:24px;">+</div>
-          <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;margin-top:4px;">ADD</div>
-        </div>
-        <!-- THU -->
-        <div style="border:1px solid #2A2233;border-radius:12px;padding:14px;background:linear-gradient(180deg,rgba(155,92,240,0.07),transparent);display:flex;flex-direction:column;">
-          <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#C7A8FF;margin-bottom:8px;">THU 02</div>
-          <div style="font-family:'NType82',sans-serif;font-size:20px;color:#EDEDED;">Pull Day</div>
-          <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:4px;">GYM · 50 MIN</div>
-        </div>
-        <!-- FRI -->
-        <div style="border:1px dashed #262626;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#5A5A5A;cursor:pointer;">
-          <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;margin-bottom:8px;align-self:flex-start;">FRI 03</div>
-          <div style="font-size:24px;">+</div>
-          <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;margin-top:4px;">ADD</div>
-        </div>
-        <!-- SAT -->
-        <div style="border:1px solid #2A2233;border-radius:12px;padding:14px;background:linear-gradient(180deg,rgba(155,92,240,0.07),transparent);display:flex;flex-direction:column;">
-          <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#C7A8FF;margin-bottom:8px;">SAT 04</div>
-          <div style="font-family:'NType82',sans-serif;font-size:20px;color:#EDEDED;">Leg Day</div>
-          <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:4px;">GYM · 60 MIN</div>
-        </div>
-        <!-- SUN -->
-        <div style="border:1px dashed #262626;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#5A5A5A;cursor:pointer;">
-          <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;margin-bottom:8px;align-self:flex-start;">SUN 05</div>
-          <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;margin-top:4px;">REST</div>
-        </div>
+        <sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
+          <div style="border:{{ d.border }};border-radius:12px;padding:14px;background:{{ d.bg }};display:flex;flex-direction:column;cursor:pointer;" data-action="toggle-plan-day" data-date="{{ d.dateKey }}" data-type="{{ d.type }}">
+            <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:{{ d.accent }};margin-bottom:8px;align-self:flex-start;">{{ d.dayLabel }}</div>
+            
+            <div style="display:{{ d.isRest ? 'none' : 'block' }};">
+              <div style="font-family:'NType82',sans-serif;font-size:20px;color:#EDEDED;">{{ d.title }}</div>
+              <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:4px;">{{ d.subtitle }}</div>
+            </div>
+
+            <div style="display:{{ d.isRest ? 'flex' : 'none' }};flex:1;flex-direction:column;align-items:center;justify-content:center;color:#5A5A5A;">
+              <div style="font-size:24px;">+</div>
+              <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;margin-top:4px;">REST / ADD</div>
+            </div>
+          </div>
+        </sc-for>
       </div>
     </div>
 
@@ -123,12 +97,12 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const workouts = this.state.workouts.map(w => ({
+    const workouts = this.state.workouts ? this.state.workouts.map(w => ({
       name: w.name,
       category: w.category ? w.category.toUpperCase() : 'UNKNOWN',
       stepCount: w.steps ? w.steps.length : 0
-    }));
-    return { workouts };
+    })) : [];
+    return { workouts, weekDays: this.state.weekDays || [] };
   }
 }
 </script>

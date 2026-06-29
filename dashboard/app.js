@@ -19,16 +19,67 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const GYM = '#9B5CF0', FLOW = '#4FC4F0', REST = '#181818';
 
+window.deriveStreak = function(kind, planDays, doneDates, todayStr, max = 6) {
+    const plannedDates = planDays
+        .filter(day => kind === 'gym' ? day.has_gym : (kind === 'flow' ? day.has_flow : false))
+        .map(day => day.date_key)
+        .sort();
+
+    const doneSet = new Set(doneDates);
+    let streak = 0;
+
+    for (const dateKey of plannedDates) {
+        if (dateKey > todayStr) break;
+        if (dateKey === todayStr && !doneSet.has(dateKey)) continue;
+        if (doneSet.has(dateKey)) {
+            streak = Math.min(max, streak + 1);
+        } else {
+            streak = Math.max(0, streak - 1);
+        }
+    }
+    return streak;
+};
+
 // --- Dashboard Data Fetching ---
 window.fetchDashboardData = async function() {
     if (!window.dashboardComponent) return;
 
-    // Fetch workouts and done_log
+    // Fetch workouts, done_log, and plan_days
     const { data: doneLog, error: logErr } = await db.from('done_log').select('*');
     const { data: workouts, error: woErr } = await db.from('workouts').select('*, steps(*)');
+    const { data: planDaysData, error: planErr } = await db.from('plan_days').select('*');
     
     if (logErr) console.error(logErr);
     if (woErr) console.error(woErr);
+    if (planErr) console.error(planErr);
+
+    const planDays = planDaysData || [];
+    const doneLogs = doneLog || [];
+
+    // Calculate Streaks
+    const todayStr = new Date().toISOString().split('T')[0];
+    const gymDones = doneLogs.filter(d => d.category === 'gym').map(d => d.date_key);
+    const flowDones = doneLogs.filter(d => d.category === 'flow').map(d => d.date_key);
+    
+    const gymStreak = window.deriveStreak('gym', planDays, gymDones, todayStr);
+    const flowStreak = window.deriveStreak('flow', planDays, flowDones, todayStr);
+    
+    // Find today's plan
+    const todayPlan = planDays.find(p => p.date_key === todayStr);
+    let todayTitle = "Rest Day";
+    let todaySubtitle = "REST · RECOVER";
+    if (todayPlan) {
+        if (todayPlan.has_gym && todayPlan.has_flow) {
+            todayTitle = "Gym & Flow";
+            todaySubtitle = "BOTH PLANNED";
+        } else if (todayPlan.has_gym) {
+            todayTitle = "Gym Workout";
+            todaySubtitle = "GYM PLANNED";
+        } else if (todayPlan.has_flow) {
+            todayTitle = "Flow Session";
+            todaySubtitle = "FLOW PLANNED";
+        }
+    }
 
     // Build Heatmap (30 weeks * 7 days)
     const heat = [];
@@ -68,8 +119,14 @@ window.fetchDashboardData = async function() {
         };
     });
 
-    // We can also compute totals from workouts
-    window.dashboardComponent.setState({ heat, sessions });
+    window.dashboardComponent.setState({ 
+        heat, 
+        sessions,
+        gymStreak,
+        flowStreak,
+        todayTitle,
+        todaySubtitle
+    });
 };
 
 // --- Builder Data Fetching & Logic ---
@@ -169,7 +226,71 @@ window.fetchLibraryData = async function() {
 window.fetchPlanData = async function() {
     if (!window.planComponent) return;
     const { data: workouts } = await db.from('workouts').select('*, steps(*)');
-    window.planComponent.setState({ workouts: workouts || [] });
+    const { data: planDaysData } = await db.from('plan_days').select('*');
+    
+    const planDays = planDaysData || [];
+
+    // Calculate this week's dates
+    const today = new Date();
+    const currentDay = today.getDay(); // 0 is Sunday, 1 is Monday
+    const diffToMonday = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+    const monday = new Date(today.setDate(diffToMonday));
+    
+    const weekDays = [];
+    const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const dateKey = d.toISOString().split('T')[0];
+        const dayNum = String(d.getDate()).padStart(2, '0');
+        const dayLabel = `${dayNames[i]} ${dayNum}`;
+        
+        const plan = planDays.find(p => p.date_key === dateKey);
+        const hasGym = plan?.has_gym || false;
+        const hasFlow = plan?.has_flow || false;
+        
+        let type = 'rest';
+        if (hasGym && hasFlow) type = 'both';
+        else if (hasGym) type = 'gym';
+        else if (hasFlow) type = 'flow';
+
+        let border, bg, accent, title, subtitle, isRest = false;
+
+        if (type === 'gym') {
+            border = '1px solid #2A2233';
+            bg = 'linear-gradient(180deg,rgba(155,92,240,0.07),transparent)';
+            accent = '#C7A8FF';
+            title = 'Gym Workout';
+            subtitle = 'GYM PLANNED';
+        } else if (type === 'flow') {
+            border = '1px solid #1A2733';
+            bg = 'linear-gradient(180deg,rgba(79,196,240,0.07),transparent)';
+            accent = '#A8EEFF';
+            title = 'Flow Session';
+            subtitle = 'FLOW PLANNED';
+        } else if (type === 'both') {
+            border = '1px solid #2A2233';
+            bg = 'linear-gradient(180deg,rgba(155,92,240,0.07),transparent)';
+            accent = '#C7A8FF';
+            title = 'Gym & Flow';
+            subtitle = 'BOTH PLANNED';
+        } else {
+            border = '1px dashed #262626';
+            bg = 'transparent';
+            accent = '#5A5A5A';
+            isRest = true;
+        }
+
+        weekDays.push({
+            dateKey,
+            dayLabel,
+            type,
+            border, bg, accent, title, subtitle, isRest
+        });
+    }
+
+    window.planComponent.setState({ workouts: workouts || [], weekDays });
 };
 
 window.saveWorkout = async function(workoutObj) {
@@ -294,6 +415,30 @@ document.addEventListener('click', (e) => {
         } else {
             window.location.href = `flow_builder.html?edit=${id}`;
         }
+    }
+
+    if (e.target.closest('[data-action="toggle-plan-day"]')) {
+        const el = e.target.closest('[data-action="toggle-plan-day"]');
+        const dateKey = el.dataset.date;
+        const currentType = el.dataset.type; // 'rest', 'gym', 'flow', 'both'
+
+        let newType = 'gym';
+        if (currentType === 'rest') newType = 'gym';
+        else if (currentType === 'gym') newType = 'flow';
+        else if (currentType === 'flow') newType = 'both';
+        else newType = 'rest';
+
+        const payload = {
+            date_key: dateKey,
+            has_gym: newType === 'gym' || newType === 'both',
+            has_flow: newType === 'flow' || newType === 'both',
+            has_rest: newType === 'rest'
+        };
+
+        db.from('plan_days').upsert(payload).then(({error}) => {
+            if (error) alert("Error: " + error.message);
+            else if (window.fetchPlanData) window.fetchPlanData();
+        });
     }
 
     // Builder Actions

@@ -82,6 +82,21 @@ class SyncManager(private val db: BranchDatabase) {
                     )
                 )
             }
+
+            // 5. Fetch PlanDays
+            val planJson = fetchFromSupabase("/rest/v1/plan_days")
+            val planArray = JSONArray(planJson)
+            for (i in 0 until planArray.length()) {
+                val obj = planArray.getJSONObject(i)
+                db.planDao().upsert(
+                    com.example.branch.data.model.PlanDay(
+                        dateKey = obj.getString("date_key"),
+                        hasGym = obj.optBoolean("has_gym", false),
+                        hasFlow = obj.optBoolean("has_flow", false),
+                        hasRest = obj.optBoolean("has_rest", false)
+                    )
+                )
+            }
             true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -156,6 +171,21 @@ class SyncManager(private val db: BranchDatabase) {
                     jsonArray.put(obj)
                 }
                 pushToSupabase("/rest/v1/done_log", jsonArray.toString())
+            }
+
+            // 5. Push PlanDays
+            val planDays = db.planDao().getAllSync()
+            if (planDays.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                planDays.forEach {
+                    val obj = org.json.JSONObject()
+                    obj.put("date_key", it.dateKey)
+                    obj.put("has_gym", it.hasGym)
+                    obj.put("has_flow", it.hasFlow)
+                    obj.put("has_rest", it.hasRest)
+                    jsonArray.put(obj)
+                }
+                pushToSupabase("/rest/v1/plan_days", jsonArray.toString())
             }
 
             true
