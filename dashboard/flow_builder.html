@@ -185,6 +185,7 @@ class Component extends DCLogic {
   save() {
     if (this.state.rawSteps.length === 0) { alert("Add steps first"); return; }
     if (window.saveWorkout) window.saveWorkout({
+      id: this.state.workoutId,
       name: this.state.workoutName,
       category: this.state.workoutCategory,
       rawSteps: this.state.rawSteps

@@ -65,12 +65,17 @@
             <thead><tr style="background:#0F0F0F;">
               <th style="padding:10px 22px;text-align:left;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">NAME</th>
               <th style="padding:10px 16px;text-align:right;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">STEPS</th>
+              <th style="padding:10px 22px;text-align:right;width:80px;"></th>
             </tr></thead>
             <tbody>
               <sc-for list="{{ workouts }}" as="wo" hint-placeholder-count="3">
-                <tr style="border-top:1px solid #161616;">
+                <tr style="border-top:1px solid #161616;transition:background 0.2s;" onmouseover="this.style.background='#141414'" onmouseout="this.style.background='transparent'">
                   <td style="padding:14px 22px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#EDEDED;">{{ wo.name }}</td>
                   <td style="padding:14px 16px;text-align:right;font-family:'Lettera Mono',monospace;font-size:12.5px;color:#EDEDED;">{{ wo.stepCount }}</td>
+                  <td style="padding:14px 22px;text-align:right;font-size:16px;">
+                    <span style="cursor:pointer;color:#8A8A8A;margin-right:12px;display:inline-block;" data-action="edit-workout" data-id="{{ wo.id }}" data-category="flow">✎</span>
+                    <span style="cursor:pointer;color:#E5484D;display:inline-block;" data-action="delete-workout" data-id="{{ wo.id }}" data-name="{{ wo.name }}">×</span>
+                  </td>
                 </tr>
               </sc-for>
             </tbody>

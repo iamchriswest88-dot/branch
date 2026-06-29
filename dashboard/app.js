@@ -89,7 +89,31 @@ window.fetchBuilderData = async function() {
         category: ex.category
     }));
 
-    window.builderComponent.setState({ library: libraryUi });
+    let rawSteps = window.builderComponent.state.rawSteps;
+    let workoutName = window.builderComponent.state.workoutName;
+
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get('edit');
+    if (editId) {
+        const { data: wo } = await db.from('workouts').select('*, steps(*)').eq('id', editId).single();
+        if (wo) {
+            workoutName = wo.name;
+            window.builderComponent.state.workoutId = wo.id;
+            if (wo.steps) wo.steps.sort((a,b) => a.sort_order - b.sort_order);
+            rawSteps = (wo.steps || []).map(s => ({
+                exercise_id: s.exercise_id,
+                name: s.exercise_name,
+                area: library.find(e => e.id === s.exercise_id)?.area || 'UNKNOWN',
+                sets: s.sets,
+                work: s.work_sec,
+                rest: s.rest_sec,
+                both: s.sides,
+                swap: s.swap_sec
+            }));
+        }
+    }
+
+    window.builderComponent.setState({ library: libraryUi, rawSteps, workoutName });
 };
 
 // --- Hub Data Fetching (Gym & Flow) ---
@@ -99,6 +123,7 @@ window.fetchGymHubData = async function() {
     const { data: history } = await db.from('done_log').select('*').eq('category', 'gym');
     
     const uiWorkouts = (workouts || []).map(w => ({
+        id: w.id,
         name: w.name,
         stepCount: w.steps ? w.steps.length : 0
     }));
@@ -118,6 +143,7 @@ window.fetchFlowHubData = async function() {
     const { data: history } = await db.from('done_log').select('*').eq('category', 'flow');
     
     const uiWorkouts = (workouts || []).map(w => ({
+        id: w.id,
         name: w.name,
         stepCount: w.steps ? w.steps.length : 0
     }));
@@ -147,15 +173,21 @@ window.fetchPlanData = async function() {
 };
 
 window.saveWorkout = async function(workoutObj) {
-    // 1. Insert Workout
     const woPayload = {
         name: workoutObj.name,
         category: workoutObj.category
     };
 
-    const { data: woData, error: woErr } = await db.from('workouts').insert(woPayload).select().single();
-    if (woErr) { alert("Error saving workout"); return; }
-    const workoutId = woData.id;
+    let workoutId = workoutObj.id;
+    if (workoutId) {
+        const { error: woErr } = await db.from('workouts').update(woPayload).eq('id', workoutId);
+        if (woErr) { alert("Error saving workout"); return; }
+        await db.from('steps').delete().eq('workout_id', workoutId);
+    } else {
+        const { data: woData, error: woErr } = await db.from('workouts').insert(woPayload).select().single();
+        if (woErr) { alert("Error saving workout"); return; }
+        workoutId = woData.id;
+    }
 
     // 2. Insert Steps
     const stepsPayload = workoutObj.rawSteps.map((s, idx) => ({
@@ -210,6 +242,58 @@ document.addEventListener('click', (e) => {
               if (error) alert("Error: " + error.message);
               else if (window.fetchLibraryData) window.fetchLibraryData();
           });
+    }
+
+    if (e.target.closest('[data-action="delete-exercise"]')) {
+        const btn = e.target.closest('[data-action="delete-exercise"]');
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        if (confirm(`Are you sure you want to delete "${name}"? This will also remove it from any existing workouts.`)) {
+            db.from('exercises').delete().eq('id', id).then(({error}) => {
+                if (error) alert("Error: " + error.message);
+                else if (window.fetchLibraryData) window.fetchLibraryData();
+            });
+        }
+    }
+
+    if (e.target.closest('[data-action="edit-exercise"]')) {
+        const btn = e.target.closest('[data-action="edit-exercise"]');
+        const id = btn.dataset.id;
+        const name = prompt("Edit Exercise Name:", btn.dataset.name);
+        if (!name) return;
+        const area = prompt("Edit Target Area:", btn.dataset.area);
+        const category = prompt("Edit Category (gym or flow):", btn.dataset.category);
+        
+        db.from('exercises').update({ name, area, category }).eq('id', id).then(({error}) => {
+            if (error) alert("Error: " + error.message);
+            else if (window.fetchLibraryData) window.fetchLibraryData();
+        });
+    }
+
+    if (e.target.closest('[data-action="delete-workout"]')) {
+        const btn = e.target.closest('[data-action="delete-workout"]');
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        if (confirm(`Are you sure you want to delete the workout "${name}"?`)) {
+            db.from('workouts').delete().eq('id', id).then(({error}) => {
+                if (error) alert("Error: " + error.message);
+                else {
+                    if (window.fetchGymHubData) window.fetchGymHubData();
+                    if (window.fetchFlowHubData) window.fetchFlowHubData();
+                }
+            });
+        }
+    }
+
+    if (e.target.closest('[data-action="edit-workout"]')) {
+        const btn = e.target.closest('[data-action="edit-workout"]');
+        const id = btn.dataset.id;
+        const category = btn.dataset.category;
+        if (category === 'gym') {
+            window.location.href = `builder.html?edit=${id}`;
+        } else {
+            window.location.href = `flow_builder.html?edit=${id}`;
+        }
     }
 
     // Builder Actions
