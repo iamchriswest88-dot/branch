@@ -25,9 +25,101 @@ fun GymScreen(
     onRunWorkout:  (String) -> Unit,
     vm: GymViewModel = viewModel(factory = GymViewModel.factory())
 ) {
-    android.util.Log.d("BranchApp", "GymScreen composed!")
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("HELLO WORLD FROM GYMSCREEN!", color = androidx.compose.ui.graphics.Color.Red)
+    val workouts      by vm.workouts.collectAsStateWithLifecycle()
+    val gymStreak     by vm.gymStreak.collectAsStateWithLifecycle()
+    val totalSessions by vm.totalGymSessions.collectAsStateWithLifecycle()
+    val showOnGlyph   by vm.showOnGlyph.collectAsStateWithLifecycle()
+
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val app = context.applicationContext as com.example.branch.BranchApplication
+    val db = androidx.compose.runtime.remember { app.database }
+    val todayKey = androidx.compose.runtime.remember { java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ISO_DATE) }
+    val planDay by db.planDao().getByDateFlow(todayKey).collectAsStateWithLifecycle(initialValue = null)
+    val gymDone by db.doneDao().isDoneFlow("gym", todayKey).collectAsStateWithLifecycle(initialValue = false)
+    val gymPlanned = planDay?.hasGym == true && !gymDone
+
+    Scaffold(
+        containerColor = NothingBg,
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text("New Workout", style = MaterialTheme.typography.labelLarge) },
+                icon = { Icon(Icons.Default.Add, null) },
+                onClick = onNewWorkout,
+                containerColor = NothingRed,
+                contentColor   = NothingText
+            )
+        }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(vertical = 24.dp)
+        ) {
+            item {
+                Text("Branch", style = MaterialTheme.typography.displaySmall, color = NothingText)
+                Text("Gym",    style = MaterialTheme.typography.titleLarge,   color = NothingMuted)
+            }
+            item {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    EmblemView(filledSections = gymStreak, style = EmblemStyle.GYM, isPlannedToday = gymPlanned)
+                }
+            }
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    StatChip("$gymStreak/6",   "SECTIONS")
+                    StatChip("$totalSessions", "TOTAL")
+                }
+            }
+            item {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Show On Glyph", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                        Switch(
+                            checked = showOnGlyph,
+                            onCheckedChange = { vm.toggleGlyph() },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = NothingRed,
+                                checkedTrackColor = NothingLeafDim
+                            )
+                        )
+                    }
+
+                }
+            }
+            item {
+                HorizontalDivider(color = NothingLine)
+                Spacer(Modifier.height(8.dp))
+                Text("Workouts", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+            }
+            if (workouts.isEmpty()) {
+                item {
+                    Text(
+                        text  = "No workouts yet. Tap New Workout.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = NothingFaint
+                    )
+                }
+            } else {
+                items(workouts, key = { it.id }) { workout ->
+                    WorkoutCard(
+                        name     = workout.name,
+                        onRun    = { onRunWorkout(workout.id) },
+                        onEdit   = { onEditWorkout(workout.id) },
+                        onDelete = { vm.deleteWorkout(workout.id) }
+                    )
+                }
+            }
+        }
     }
 }
 
