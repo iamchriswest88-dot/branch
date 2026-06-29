@@ -72,5 +72,5 @@ object SeedData {
     )
 
     private fun e(id: String, name: String, area: String, category: String) =
-        Exercise(id = id, name = name, area = area, category = category, isCustom = false)
+        Exercise(id = java.util.UUID.nameUUIDFromBytes(id.toByteArray(Charsets.UTF_8)).toString(), name = name, area = area, category = category, isCustom = false)
 }

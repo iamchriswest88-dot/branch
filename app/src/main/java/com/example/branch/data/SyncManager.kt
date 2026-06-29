@@ -92,7 +92,9 @@ class SyncManager(private val db: BranchDatabase) {
     suspend fun syncToCloud(): Boolean = withContext(Dispatchers.IO) {
         try {
             // 1. Push Exercises
-            val exercises = db.exerciseDao().getAllSync()
+            val exercises = db.exerciseDao().getAllSync().filter {
+                try { java.util.UUID.fromString(it.id); true } catch (e: Exception) { false }
+            }
             if (exercises.isNotEmpty()) {
                 val jsonArray = JSONArray()
                 exercises.forEach {
