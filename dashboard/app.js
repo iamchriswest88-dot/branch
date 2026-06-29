@@ -340,6 +340,126 @@ window.saveWorkout = async function(workoutObj) {
     window.location.href = "index.html"; // Go back to dashboard
 };
 
+window.openExerciseModal = function(existingEx = null) {
+    const isEdit = !!existingEx;
+    
+    // Create backdrop
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);";
+    
+    // Create modal content
+    const modal = document.createElement('div');
+    modal.style.cssText = "background:#0D0D0D;border:1px solid #262626;border-radius:16px;width:400px;padding:24px;font-family:'Space Grotesk',sans-serif;color:#EDEDED;";
+    
+    const title = document.createElement('div');
+    title.style.cssText = "font-family:'NType82',sans-serif;font-size:24px;margin-bottom:20px;";
+    title.innerText = isEdit ? "Edit Exercise" : "Add Exercise";
+    
+    const createField = (label, el) => {
+        const wrap = document.createElement('div');
+        wrap.style.marginBottom = "16px";
+        const l = document.createElement('div');
+        l.style.cssText = "font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#8A8A8A;margin-bottom:6px;";
+        l.innerText = label;
+        wrap.appendChild(l);
+        el.style.cssText = "width:100%;box-sizing:border-box;background:#141414;border:1px solid #262626;border-radius:8px;padding:12px;color:#EDEDED;font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;";
+        wrap.appendChild(el);
+        return wrap;
+    };
+    
+    const nameInput = document.createElement('input');
+    nameInput.type = "text";
+    nameInput.value = existingEx ? existingEx.name : "";
+    
+    const areaSelect = document.createElement('select');
+    const areas = ["Chest","Back","Legs","Quads","Hamstrings","Glutes","Shoulders","Biceps","Triceps","Core","Full body","Spine","Hips","Balance","Traps"];
+    areas.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.innerText = a.toUpperCase();
+        areaSelect.appendChild(opt);
+    });
+    areaSelect.value = existingEx ? (existingEx.area || "Full body") : "Full body";
+    
+    const catSelect = document.createElement('select');
+    ["gym", "flow"].forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.innerText = c.toUpperCase();
+        catSelect.appendChild(opt);
+    });
+    catSelect.value = existingEx ? (existingEx.category || "gym") : "gym";
+    
+    const eqSelect = document.createElement('select');
+    ["Bodyweight", "Dumbbell", "Kettlebell", "Barbell", "Cable"].forEach(e => {
+        const opt = document.createElement('option');
+        opt.value = e;
+        opt.innerText = e.toUpperCase();
+        eqSelect.appendChild(opt);
+    });
+    eqSelect.value = existingEx ? (existingEx.equipment || 'Bodyweight') : "Bodyweight";
+    
+    const btnRow = document.createElement('div');
+    btnRow.style.cssText = "display:flex;justify-content:flex-end;gap:12px;margin-top:24px;";
+    
+    const cancel = document.createElement('button');
+    cancel.innerText = "CANCEL";
+    cancel.style.cssText = "background:transparent;border:1px solid #262626;color:#8A8A8A;border-radius:20px;padding:8px 16px;cursor:pointer;font-family:'Lettera Mono',monospace;font-size:11px;";
+    cancel.onclick = () => document.body.removeChild(backdrop);
+    
+    const save = document.createElement('button');
+    save.innerText = "SAVE";
+    save.style.cssText = "background:#9B5CF0;border:none;color:#fff;border-radius:20px;padding:8px 24px;cursor:pointer;font-family:'Lettera Mono',monospace;font-size:11px;font-weight:bold;";
+    save.onclick = () => {
+        const payload = {
+            name: nameInput.value,
+            area: areaSelect.value,
+            category: catSelect.value,
+            equipment: eqSelect.value,
+            is_custom: isEdit ? existingEx.is_custom : true
+        };
+        
+        if (!payload.name) { alert("Name is required"); return; }
+        
+        save.innerText = "SAVING...";
+        save.disabled = true;
+        
+        if (isEdit) {
+            db.from('exercises').update(payload).eq('id', existingEx.id).then(({error}) => {
+                if (error) { alert("Error: " + error.message); save.innerText="SAVE"; save.disabled=false; }
+                else {
+                    document.body.removeChild(backdrop);
+                    if (window.fetchLibraryData) window.fetchLibraryData();
+                    if (window.fetchBuilderData) window.fetchBuilderData();
+                }
+            });
+        } else {
+            db.from('exercises').insert([payload]).then(({error}) => {
+                if (error) { alert("Error: " + error.message); save.innerText="SAVE"; save.disabled=false; }
+                else {
+                    document.body.removeChild(backdrop);
+                    if (window.fetchLibraryData) window.fetchLibraryData();
+                    if (window.fetchBuilderData) window.fetchBuilderData();
+                }
+            });
+        }
+    };
+    
+    btnRow.appendChild(cancel);
+    btnRow.appendChild(save);
+    
+    modal.appendChild(title);
+    modal.appendChild(createField("EXERCISE NAME", nameInput));
+    modal.appendChild(createField("TARGET AREA", areaSelect));
+    modal.appendChild(createField("CATEGORY", catSelect));
+    modal.appendChild(createField("EQUIPMENT", eqSelect));
+    modal.appendChild(btnRow);
+    
+    backdrop.appendChild(modal);
+    document.body.appendChild(backdrop);
+    nameInput.focus();
+};
+
 // --- Global Event Delegation ---
 document.addEventListener('click', (e) => {
     // Navigation
@@ -362,17 +482,7 @@ document.addEventListener('click', (e) => {
     }
     
     if (e.target.closest('[data-action="add-exercise-prompt"]')) {
-        const name = prompt("Enter Exercise Name:");
-        if (!name) return;
-        const area = prompt("Enter Target Area (e.g., Chest, Quads):", "Full Body");
-        const category = prompt("Enter Category (gym or flow):", "gym");
-        const equipment = prompt("Enter Equipment Type (e.g., Bodyweight, Dumbbell, Kettlebell):", "Bodyweight");
-        
-        db.from('exercises').insert([{ name, area, category, equipment, is_custom: true }])
-          .then(({ error }) => {
-              if (error) alert("Error: " + error.message);
-              else if (window.fetchLibraryData) window.fetchLibraryData();
-          });
+        window.openExerciseModal();
     }
 
     if (e.target.closest('[data-action="delete-exercise"]')) {
@@ -389,16 +499,13 @@ document.addEventListener('click', (e) => {
 
     if (e.target.closest('[data-action="edit-exercise"]')) {
         const btn = e.target.closest('[data-action="edit-exercise"]');
-        const id = btn.dataset.id;
-        const name = prompt("Edit Exercise Name:", btn.dataset.name);
-        if (!name) return;
-        const area = prompt("Edit Target Area:", btn.dataset.area);
-        const category = prompt("Edit Category (gym or flow):", btn.dataset.category);
-        const equipment = prompt("Edit Equipment Type:", btn.dataset.equipment || 'Bodyweight');
-        
-        db.from('exercises').update({ name, area, category, equipment }).eq('id', id).then(({error}) => {
-            if (error) alert("Error: " + error.message);
-            else if (window.fetchLibraryData) window.fetchLibraryData();
+        window.openExerciseModal({
+            id: btn.dataset.id,
+            name: btn.dataset.name,
+            area: btn.dataset.area,
+            category: btn.dataset.category,
+            equipment: btn.dataset.equipment,
+            is_custom: true
         });
     }
 
