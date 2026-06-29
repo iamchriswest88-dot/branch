@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @font-face{font-family:'NType82';src:url('uploads/NType82-Headline.otf') format('opentype');font-weight:400 700;font-display:swap;}
+    @font-face{font-family:'Space Grotesk';src:url('uploads/SpaceGrotesk-Regular.otf') format('opentype');font-weight:400 700;font-display:swap;}
+    @font-face{font-family:'Lettera Mono';src:url('uploads/LetteraMonoLL-Regular.otf') format('opentype');font-display:swap;}
+    body{margin:0;}
+  </style>
+</helmet>
+<div style="width:1440px;min-height:940px;box-sizing:border-box;display:flex;gap:14px;padding:14px;background:radial-gradient(#171717 1px,transparent 1.5px) 0 0/16px 16px,#0A0A0A;font-family:'Space Grotesk',sans-serif;color:#EDEDED;">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside style="width:212px;flex:0 0 auto;background:#0D0D0D;border:1px solid #1F1F1F;border-radius:16px;display:flex;flex-direction:column;padding:20px 0;">
+    <div style="padding:0 20px 20px;display:flex;align-items:center;gap:11px;">
+      <div style="width:34px;height:34px;border-radius:9px;border:1.5px solid #9B5CF0;display:flex;align-items:center;justify-content:center;"><div style="display:grid;grid-template-columns:repeat(3,3px);gap:2px;"><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div></div></div>
+      <div style="font-family:'NType82',sans-serif;font-size:20px;letter-spacing:0px;color:#EDEDED;">Branch</div>
+    </div>
+    <nav style="padding:0 12px;display:flex;flex-direction:column;gap:2px;">
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-dashboard"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Dashboard</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;background:#17121F;border-left:2px solid #9B5CF0;color:#C7A8FF;cursor:pointer;" data-action="nav-gym"><span style="width:5px;height:5px;border-radius:1px;background:#9B5CF0;"></span><span style="font-size:13.5px;font-weight:500;">Gym</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-flow"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Flow</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-plan"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Plan</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-library"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Library</span></div>
+      <div style="height:1px;background:#1b1b1b;margin:7px 10px;"></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Glyph Interface</span></div>
+    </nav>
+    <div style="flex:1;"></div>
+    <div style="padding:0 12px;margin-bottom:10px;"><div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Settings</span></div></div>
+    <div style="padding:0 14px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;background:#141414;border:1px solid #1f1f1f;">
+        <div style="width:30px;height:30px;border-radius:50%;background:#9B5CF0;display:flex;align-items:center;justify-content:center;font-family:'Lettera Mono',monospace;font-size:11px;color:#0A0A0A;font-weight:700;">CW</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:12.5px;color:#EDEDED;font-weight:500;">Chris West</div><div style="font-family:'Lettera Mono',monospace;font-size:10px;color:#5A5A5A;">Phone (3)</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;">
+
+    <!-- topbar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 4px 0;">
+      <div>
+        <div style="font-family:'NType82',sans-serif;font-size:28px;letter-spacing:-0.5px;color:#EDEDED;line-height:1;">Gym</div>
+        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;margin-top:7px;">GYM WORKOUTS & HISTORY</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="background:#9B5CF0;border-radius:22px;padding:11px 22px;font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:1.5px;color:#fff;cursor:pointer;" data-action="new-gym-workout">NEW WORKOUT</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:14px;flex:1;">
+      <!-- workouts list -->
+      <div style="background:#0D0D0D;border:1px solid #262626;border-radius:16px;overflow:hidden;flex:1;display:flex;flex-direction:column;">
+        <div style="padding:18px 22px 12px;font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;">CREATED WORKOUTS</div>
+        <div style="flex:1;overflow-y:auto;">
+          <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+            <thead><tr style="background:#0F0F0F;">
+              <th style="padding:10px 22px;text-align:left;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">NAME</th>
+              <th style="padding:10px 16px;text-align:right;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">STEPS</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ workouts }}" as="wo" hint-placeholder-count="3">
+                <tr style="border-top:1px solid #161616;">
+                  <td style="padding:14px 22px;font-family:'Space Grotesk',sans-serif;font-size:14px;color:#EDEDED;">{{ wo.name }}</td>
+                  <td style="padding:14px 16px;text-align:right;font-family:'Lettera Mono',monospace;font-size:12.5px;color:#EDEDED;">{{ wo.stepCount }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- history list -->
+      <div style="background:#0D0D0D;border:1px solid #262626;border-radius:16px;overflow:hidden;flex:1.2;display:flex;flex-direction:column;">
+        <div style="padding:18px 22px 12px;font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;">GYM HISTORY</div>
+        <div style="flex:1;overflow-y:auto;">
+          <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+            <thead><tr style="background:#0F0F0F;">
+              <th style="padding:10px 22px;text-align:left;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">DATE</th>
+              <th style="padding:10px 16px;text-align:left;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">WORKOUT</th>
+              <th style="padding:10px 22px;text-align:right;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">DURATION</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
+                <tr style="border-top:1px solid #161616;">
+                  <td style="padding:14px 22px;font-family:'Lettera Mono',monospace;font-size:12px;color:#B5B5B5;">{{ h.date }}</td>
+                  <td style="padding:14px 16px;font-size:13.5px;color:#EDEDED;font-weight:500;">{{ h.workout }}</td>
+                  <td style="padding:14px 22px;text-align:right;font-family:'Lettera Mono',monospace;font-size:12.5px;color:#EDEDED;">{{ h.duration }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { workouts: [], history: [] };
+    window.gymComponent = this;
+  }
+  
+  componentDidMount() {
+    if (window.fetchGymHubData) window.fetchGymHubData();
+  }
+
+  renderVals() {
+    return this.state;
+  }
+}
+</script>
+</body>
+</html>
+
+
+
+

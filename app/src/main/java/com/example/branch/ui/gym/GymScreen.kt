@@ -1,9 +1,13 @@
 package com.example.branch.ui.gym
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -11,7 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.branch.theme.*
@@ -39,37 +48,40 @@ fun GymScreen(
     val gymPlanned = planDay?.hasGym == true && !gymDone
 
     Scaffold(
-        containerColor = NothingBg,
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text = { Text("New Workout", style = MaterialTheme.typography.labelLarge) },
-                icon = { Icon(Icons.Default.Add, null) },
-                onClick = onNewWorkout,
-                containerColor = NothingRed,
-                contentColor   = NothingText
-            )
-        }
+        modifier = Modifier.dotMatrixBackground(),
+        containerColor = Color.Transparent
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(vertical = 24.dp)
         ) {
             item {
-                Text("Branch", style = MaterialTheme.typography.displaySmall, color = NothingText)
-                Text("Gym",    style = MaterialTheme.typography.titleLarge,   color = NothingMuted)
+                Text(
+                    text = "Branch", 
+                    style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), 
+                    color = NothingText
+                )
+                Text(
+                    text = "GYM",    
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 4.sp),   
+                    color = NothingMuted
+                )
             }
             item {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp), contentAlignment = Alignment.Center) {
                     EmblemView(filledSections = gymStreak, style = EmblemStyle.GYM, isPlannedToday = gymPlanned)
                 }
             }
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, NothingLine, RoundedCornerShape(6.dp))
+                        .padding(vertical = 16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     StatChip("$gymStreak/6",   "SECTIONS")
@@ -77,34 +89,35 @@ fun GymScreen(
                 }
             }
             item {
-                Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text("Show On Glyph", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
-                        Switch(
-                            checked = showOnGlyph,
-                            onCheckedChange = { vm.toggleGlyph() },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = NothingRed,
-                                checkedTrackColor = NothingLeafDim
-                            )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("SHOW ON GLYPH", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                    Switch(
+                        checked = showOnGlyph,
+                        onCheckedChange = { vm.toggleGlyph() },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = GymPurple,
+                            checkedTrackColor = NothingSurface2,
+                            uncheckedThumbColor = NothingMuted,
+                            uncheckedTrackColor = NothingSurface2,
+                            uncheckedBorderColor = Color.Transparent,
+                            checkedBorderColor = Color.Transparent
                         )
-                    }
-
+                    )
                 }
+                HorizontalDivider(color = NothingLine)
             }
             item {
-                HorizontalDivider(color = NothingLine)
                 Spacer(Modifier.height(8.dp))
-                Text("Workouts", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                Text("WORKOUTS", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
             }
             if (workouts.isEmpty()) {
                 item {
                     Text(
-                        text  = "No workouts yet. Tap New Workout.",
+                        text  = "No workouts yet.",
                         style = MaterialTheme.typography.bodySmall,
                         color = NothingFaint
                     )
@@ -112,12 +125,36 @@ fun GymScreen(
             } else {
                 items(workouts, key = { it.id }) { workout ->
                     WorkoutCard(
-                        name     = workout.name,
-                        onRun    = { onRunWorkout(workout.id) },
-                        onEdit   = { onEditWorkout(workout.id) },
-                        onDelete = { vm.deleteWorkout(workout.id) }
+                        name        = workout.name,
+                        accentColor = GymPurple,
+                        onRun       = { onRunWorkout(workout.id) },
+                        onEdit      = { onEditWorkout(workout.id) },
+                        onDelete    = { vm.deleteWorkout(workout.id) }
                     )
                 }
+            }
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onNewWorkout() }
+                        .border(
+                            width = 1.dp, 
+                            color = NothingLine2, 
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "+ NEW WORKOUT", 
+                        style = MaterialTheme.typography.labelMedium, 
+                        color = GymPurple
+                    )
+                }
+            }
+            item {
+                Spacer(Modifier.height(32.dp))
             }
         }
     }
@@ -126,24 +163,34 @@ fun GymScreen(
 @Composable
 fun StatChip(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, style = MaterialTheme.typography.headlineMedium, color = NothingText)
-        Text(label, style = MaterialTheme.typography.labelSmall,     color = NothingMuted)
+        val split = value.split("/")
+        if (split.size == 2) {
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(split[0], style = MaterialTheme.typography.labelLarge.copy(fontSize = 24.sp), color = NothingText)
+                Text("/${split[1]}", style = MaterialTheme.typography.labelLarge.copy(fontSize = 24.sp), color = NothingFaint)
+            }
+        } else {
+            Text(value, style = MaterialTheme.typography.labelLarge.copy(fontSize = 24.sp), color = NothingText)
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(label, style = MaterialTheme.typography.labelSmall, color = NothingMuted)
     }
 }
 
 @Composable
 fun WorkoutCard(
-    name:     String,
-    onRun:    () -> Unit,
-    onEdit:   () -> Unit,
-    onDelete: () -> Unit,
+    name:        String,
+    accentColor: Color,
+    onRun:       () -> Unit,
+    onEdit:      () -> Unit,
+    onDelete:    () -> Unit,
 ) {
     Surface(
-        color    = NothingSurface,
-        shape    = MaterialTheme.shapes.small,
+        color    = Color.Transparent,
+        shape    = RoundedCornerShape(6.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, NothingLine, MaterialTheme.shapes.small)
+            .border(1.dp, NothingLine, RoundedCornerShape(6.dp))
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -151,18 +198,25 @@ fun WorkoutCard(
         ) {
             Text(
                 text     = name.uppercase(),
-                style    = MaterialTheme.typography.titleSmall,
+                style    = MaterialTheme.typography.labelMedium,
                 color    = NothingText,
                 modifier = Modifier.weight(1f)
             )
-            IconButton(onClick = onRun) {
-                Icon(Icons.Default.PlayArrow, "Run",    tint = NothingRed)
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, "Delete", tint = NothingFaint)
             }
             IconButton(onClick = onEdit) {
-                Icon(Icons.Default.Edit,      "Edit",   tint = NothingMuted)
+                Icon(Icons.Default.Edit, "Edit", tint = NothingMuted)
             }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete,    "Delete", tint = NothingFaint)
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(CircleShape)
+                    .background(accentColor)
+                    .clickable { onRun() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.PlayArrow, "Run", tint = NothingBg, modifier = Modifier.size(16.dp))
             }
         }
     }

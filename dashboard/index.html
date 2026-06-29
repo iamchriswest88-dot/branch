@@ -1,130 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Branch Dashboard</title>
-    <meta name="description" content="Dashboard to create exercises and workouts for Branch">
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts to approximate Nothing fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
 </head>
 <body>
-    <div id="app-container">
-        <header>
-            <div class="logo">
-                <span class="logo-dot"></span>
-                <h1>Branch</h1>
-                <span class="subtitle">DASHBOARD</span>
-            </div>
-            <button id="btn-export" class="action-btn">Export to Branch</button>
-        </header>
+<x-dc>
+<helmet>
+  <style>
+    @font-face{font-family:'NType82';src:url('uploads/NType82-Headline.otf') format('opentype');font-weight:400 700;font-display:swap;}
+    @font-face{font-family:'Space Grotesk';src:url('uploads/SpaceGrotesk-Regular.otf') format('opentype');font-weight:400 700;font-display:swap;}
+    @font-face{font-family:'Lettera Mono';src:url('uploads/LetteraMonoLL-Regular.otf') format('opentype');font-display:swap;}
+    body{margin:0;}
+  </style>
+</helmet>
+<div style="width:1440px;min-height:940px;box-sizing:border-box;display:flex;gap:14px;padding:14px;background:radial-gradient(#171717 1px,transparent 1.5px) 0 0/16px 16px,#0A0A0A;font-family:'Space Grotesk',sans-serif;color:#EDEDED;">
 
-        <main>
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab-btn active" data-target="exercises-view">Exercises</button>
-                <button class="tab-btn" data-target="workouts-view">Workouts</button>
-            </div>
+  <!-- ============ SIDEBAR ============ -->
+  <aside style="width:212px;flex:0 0 auto;background:#0D0D0D;border:1px solid #1F1F1F;border-radius:16px;display:flex;flex-direction:column;padding:20px 0;">
+    <div style="padding:0 20px 20px;display:flex;align-items:center;gap:11px;">
+      <div style="width:34px;height:34px;border-radius:9px;border:1.5px solid #9B5CF0;display:flex;align-items:center;justify-content:center;"><div style="display:grid;grid-template-columns:repeat(3,3px);gap:2px;"><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div></div></div>
+      <div style="font-family:'NType82',sans-serif;font-size:20px;letter-spacing:0px;color:#EDEDED;">Branch</div>
+    </div>
+    <nav style="padding:0 12px;display:flex;flex-direction:column;gap:2px;">
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;background:#17121F;border-left:2px solid #9B5CF0;color:#C7A8FF;cursor:pointer;" data-action="nav-dashboard"><span style="width:5px;height:5px;border-radius:1px;background:#9B5CF0;"></span><span style="font-size:13.5px;font-weight:500;">Dashboard</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-gym"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Gym</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-flow"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Flow</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-plan"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Plan</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-library"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Library</span></div>
+      <div style="height:1px;background:#1b1b1b;margin:7px 10px;"></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Glyph Interface</span></div>
+    </nav>
+    <div style="flex:1;"></div>
+    <div style="padding:0 12px;margin-bottom:10px;"><div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Settings</span></div></div>
+    <div style="padding:0 14px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;background:#141414;border:1px solid #1f1f1f;">
+        <div style="width:30px;height:30px;border-radius:50%;background:#9B5CF0;display:flex;align-items:center;justify-content:center;font-family:'Lettera Mono',monospace;font-size:11px;color:#0A0A0A;font-weight:700;">CW</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:12.5px;color:#EDEDED;font-weight:500;">Chris West</div><div style="font-family:'Lettera Mono',monospace;font-size:10px;color:#5A5A5A;">Phone (3)</div></div>
+      </div>
+    </div>
+  </aside>
 
-            <!-- Exercises View -->
-            <section id="exercises-view" class="view active">
-                <div class="view-header">
-                    <h2>Manage Exercises</h2>
-                    <button id="btn-new-exercise" class="add-btn">+ New Exercise</button>
-                </div>
-                <div class="list-container" id="exercises-list">
-                    <!-- Exercise cards rendered here -->
-                </div>
-            </section>
+  <!-- ============ MAIN ============ -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;">
 
-            <!-- Workouts View -->
-            <section id="workouts-view" class="view">
-                <div class="view-header">
-                    <h2>Manage Workouts</h2>
-                    <button id="btn-new-workout" class="add-btn">+ New Workout</button>
-                </div>
-                <div class="list-container" id="workouts-list">
-                    <!-- Workout cards rendered here -->
-                </div>
-            </section>
-        </main>
+    <!-- topbar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 4px 0;">
+      <div>
+        <div style="font-family:'NType82',sans-serif;font-size:28px;letter-spacing:-0.5px;color:#EDEDED;line-height:1;">Dashboard</div>
+        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;margin-top:7px;">MON · 29 JUN 2026</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:center;gap:8px;border:1px solid #262626;border-radius:22px;padding:9px 14px;"><span style="font-family:'Lettera Mono',monospace;font-size:16px;color:#EDEDED;">12</span><span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#8A8A8A;">DAY STREAK</span></div>
+      </div>
     </div>
 
-    <!-- Modals -->
-    <div id="exercise-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="exercise-modal-title">New Exercise</h3>
-            <form id="exercise-form">
-                <input type="hidden" id="ex-id">
-                <div class="form-group">
-                    <label for="ex-name">Name</label>
-                    <input type="text" id="ex-name" required placeholder="e.g. Push Ups">
-                </div>
-                <div class="form-group">
-                    <label for="ex-area">Area</label>
-                    <input type="text" id="ex-area" required placeholder="e.g. Chest">
-                </div>
-                <div class="form-group">
-                    <label for="ex-category">Category</label>
-                    <select id="ex-category" required>
-                        <option value="gym">Gym</option>
-                        <option value="flow">Flow</option>
-                    </select>
-                </div>
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="ex-custom">
-                    <label for="ex-custom">Is Custom?</label>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal('exercise-modal')">Cancel</button>
-                    <button type="submit" class="btn-save">Save Exercise</button>
-                </div>
-            </form>
+    <!-- row: emblems + today -->
+    <div style="display:flex;gap:14px;">
+      <!-- GYM panel -->
+      <div style="flex:1;background:#0D0D0D;border:1px solid #262626;border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;width:100%;"><span style="font-size:16px;font-weight:500;letter-spacing:0.5px;color:#EDEDED;">GYM</span><span style="font-family:'Lettera Mono',monospace;font-size:13px;color:#9B5CF0;">4 / 6</span></div>
+        <div style="width:168px;height:168px;position:relative;overflow:hidden;margin:14px 0;"><div style="position:absolute;top:0;left:0;transform:scale(0.6462);transform-origin:top left;"><dc-import name="GlyphEmblem" variant="gym" filled="4" accent="#9B5CF0" hint-size="260px,260px"></dc-import></div></div>
+        <div style="width:100%;display:flex;justify-content:space-between;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#8A8A8A;"><span>SECTIONS</span><span style="color:#5A5A5A;">THIS WK · 2</span></div>
+      </div>
+      <!-- FLOW panel -->
+      <div style="flex:1;background:#0D0D0D;border:1px solid #262626;border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;width:100%;"><span style="font-size:16px;font-weight:500;letter-spacing:0.5px;color:#EDEDED;">FLOW</span><span style="font-family:'Lettera Mono',monospace;font-size:13px;color:#4FC4F0;">3 / 6</span></div>
+        <div style="width:168px;height:168px;position:relative;overflow:hidden;margin:14px 0;"><div style="position:absolute;top:0;left:0;transform:scale(0.6462);transform-origin:top left;"><dc-import name="GlyphEmblem" variant="flow" filled="3" accent="#4FC4F0" hint-size="260px,260px"></dc-import></div></div>
+        <div style="width:100%;display:flex;justify-content:space-between;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#8A8A8A;"><span>SECTIONS</span><span style="color:#5A5A5A;">THIS WK · 2</span></div>
+      </div>
+      <!-- Today + plan -->
+      <div style="flex:1.15;background:#0D0D0D;border:1px solid #262626;border-radius:16px;padding:20px;display:flex;flex-direction:column;">
+        <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:2px;color:#8A8A8A;">TODAY · PLANNED</div>
+        <div style="border:1px solid #2A2233;border-radius:12px;padding:16px;margin-top:12px;background:linear-gradient(180deg,rgba(155,92,240,0.07),transparent);">
+          <div style="font-family:'NType82',sans-serif;font-size:24px;color:#EDEDED;">Push Day</div>
+          <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#C7A8FF;margin-top:6px;">GYM · 24 MIN · 5 MOVES</div>
         </div>
-    </div>
-
-    <div id="workout-modal" class="modal">
-        <div class="modal-content large">
-            <h3 id="workout-modal-title">New Workout</h3>
-            <form id="workout-form">
-                <input type="hidden" id="wo-id">
-                <div class="form-row">
-                    <div class="form-group flex-2">
-                        <label for="wo-name">Workout Name</label>
-                        <input type="text" id="wo-name" required placeholder="e.g. Upper Body Power">
-                    </div>
-                    <div class="form-group flex-1">
-                        <label for="wo-category">Category</label>
-                        <select id="wo-category" required>
-                            <option value="gym">Gym</option>
-                            <option value="flow">Flow</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="steps-section">
-                    <div class="steps-header">
-                        <h4>Workout Steps</h4>
-                        <button type="button" id="btn-add-step" class="add-btn small">+ Add Step</button>
-                    </div>
-                    <div id="steps-container">
-                        <!-- Steps rendered here -->
-                    </div>
-                </div>
-
-                <div class="modal-actions mt-20">
-                    <button type="button" class="btn-cancel" onclick="closeModal('workout-modal')">Cancel</button>
-                    <button type="submit" class="btn-save">Save Workout</button>
-                </div>
-            </form>
+        <div style="flex:1;"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:16px;">
+          <div><div style="font-family:'Lettera Mono',monospace;font-size:20px;color:#EDEDED;">4<span style="color:#5A5A5A;">/5</span></div><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:3px;">THIS WEEK</div></div>
+          <div><div style="font-family:'Lettera Mono',monospace;font-size:20px;color:#EDEDED;">192</div><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:3px;">TOTAL</div></div>
+          <div><div style="font-family:'Lettera Mono',monospace;font-size:20px;color:#EDEDED;">3.4</div><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:3px;">AVG / WK</div></div>
         </div>
+      </div>
     </div>
 
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="app.js"></script>
+    <!-- activity heatmap -->
+    <div style="background:#0D0D0D;border:1px solid #262626;border-radius:16px;padding:20px 22px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;">ACTIVITY · LAST 30 WEEKS</div>
+        <div style="display:flex;align-items:center;gap:16px;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1px;color:#8A8A8A;">
+          <div style="display:flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:2px;background:#9B5CF0;"></span>GYM</div>
+          <div style="display:flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:2px;background:#4FC4F0;"></span>FLOW</div>
+          <div style="display:flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:2px;background:#181818;border:1px solid #262626;"></span>REST</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-rows:repeat(7,15px);grid-auto-flow:column;grid-auto-columns:15px;gap:5px;">
+        <sc-for list="{{ heat }}" as="c" hint-placeholder-count="210"><div style="width:15px;height:15px;border-radius:3px;background:{{ c.color }};"></div></sc-for>
+      </div>
+    </div>
+
+    <!-- recent sessions -->
+    <div style="background:#0D0D0D;border:1px solid #262626;border-radius:16px;overflow:hidden;">
+      <div style="padding:18px 22px 12px;font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;">RECENT SESSIONS</div>
+      <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+        <colgroup><col style="width:120px;"><col style="width:96px;"><col><col style="width:120px;"><col style="width:120px;"><col style="width:120px;"></colgroup>
+        <thead><tr style="background:#0F0F0F;">
+          <th style="padding:10px 22px;text-align:left;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">DATE</th>
+          <th style="padding:10px 16px;text-align:left;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">TYPE</th>
+          <th style="padding:10px 16px;text-align:left;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">WORKOUT</th>
+          <th style="padding:10px 16px;text-align:right;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">DURATION</th>
+          <th style="padding:10px 16px;text-align:right;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">VOLUME</th>
+          <th style="padding:10px 22px;text-align:right;font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#5A5A5A;">SECTIONS</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="6">
+            <tr style="border-top:1px solid #161616;">
+              <td style="padding:14px 22px;font-family:'Lettera Mono',monospace;font-size:12px;color:#B5B5B5;">{{ s.date }}</td>
+              <td style="padding:14px 16px;"><span style="display:inline-flex;align-items:center;gap:6px;font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:0.5px;color:{{ s.color }};"><span style="width:6px;height:6px;border-radius:50%;background:{{ s.color }};"></span>{{ s.type }}</span></td>
+              <td style="padding:14px 16px;font-size:13.5px;color:#EDEDED;font-weight:500;">{{ s.workout }}</td>
+              <td style="padding:14px 16px;text-align:right;font-family:'Lettera Mono',monospace;font-size:12.5px;color:#EDEDED;">{{ s.duration }}</td>
+              <td style="padding:14px 16px;text-align:right;font-family:'Lettera Mono',monospace;font-size:12px;color:#8A8A8A;">{{ s.volume }}</td>
+              <td style="padding:14px 22px;text-align:right;font-family:'Lettera Mono',monospace;font-size:12.5px;color:{{ s.deltaColor }};">{{ s.delta }}</td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { heat: [], sessions: [] };
+    window.dashboardComponent = this;
+  }
+  
+  componentDidMount() {
+    if (window.fetchDashboardData) {
+      window.fetchDashboardData();
+    }
+  }
+
+  renderVals() {
+    return this.state;
+  }
+}
+</script>
 </body>
 </html>
+
+
+

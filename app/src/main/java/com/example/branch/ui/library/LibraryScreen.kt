@@ -6,8 +6,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -16,7 +19,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.branch.data.model.Exercise
@@ -41,108 +46,140 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
     val filteredGym  = if (selectedArea == "All") gymExercises else gymExercises.filter { it.area == selectedArea }
     val filteredFlow = if (selectedArea == "All") flowExercises else flowExercises.filter { it.area == selectedArea }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(vertical = 24.dp)
-    ) {
-        item { 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text("Library", style = MaterialTheme.typography.displaySmall, color = NothingText) 
+    Scaffold(
+        modifier = Modifier.dotMatrixBackground(),
+        containerColor = Color.Transparent
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(vertical = 24.dp)
+        ) {
+            item { 
+                Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Library", 
+                        style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), 
+                        color = NothingText
+                    ) 
+                }
             }
-        }
 
-        item {
-            var filterExpanded by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(
-                expanded = filterExpanded,
-                onExpandedChange = { filterExpanded = !filterExpanded },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = selectedArea,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Filter by Area", style = MaterialTheme.typography.labelSmall) },
-                    textStyle = MaterialTheme.typography.bodySmall,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(filterExpanded) },
-                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor   = NothingRed,
-                        unfocusedBorderColor = NothingLine,
-                        focusedTextColor     = NothingText,
-                        unfocusedTextColor   = NothingText,
-                        focusedLabelColor    = NothingRed,
-                        unfocusedLabelColor  = NothingMuted
-                    )
-                )
-                ExposedDropdownMenu(
+            item {
+                var filterExpanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
                     expanded = filterExpanded,
-                    onDismissRequest = { filterExpanded = false },
-                    containerColor = NothingSurface2
+                    onExpandedChange = { filterExpanded = !filterExpanded },
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    allFilterAreas.forEach { a ->
-                        DropdownMenuItem(
-                            text = { Text(a, color = NothingText, style = MaterialTheme.typography.bodySmall) },
-                            onClick = { selectedArea = a; filterExpanded = false }
+                    OutlinedTextField(
+                        value = selectedArea,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Filter by Area", style = MaterialTheme.typography.labelSmall) },
+                        textStyle = MaterialTheme.typography.bodySmall,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(filterExpanded) },
+                        modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
+                        shape = RoundedCornerShape(6.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor   = GymPurple,
+                            unfocusedBorderColor = NothingLine,
+                            focusedTextColor     = NothingText,
+                            unfocusedTextColor   = NothingText,
+                            focusedLabelColor    = GymPurple,
+                            unfocusedLabelColor  = NothingMuted
                         )
+                    )
+                    ExposedDropdownMenu(
+                        expanded = filterExpanded,
+                        onDismissRequest = { filterExpanded = false },
+                        containerColor = NothingSurface2
+                    ) {
+                        allFilterAreas.forEach { a ->
+                            DropdownMenuItem(
+                                text = { Text(a, color = NothingText, style = MaterialTheme.typography.bodySmall) },
+                                onClick = { selectedArea = a; filterExpanded = false }
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        item {
-            Spacer(Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth().clickable { gymExpanded = !gymExpanded }.padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Gym", style = MaterialTheme.typography.titleMedium, color = NothingMuted)
-                Icon(if (gymExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, "Toggle Gym", tint = NothingMuted)
+            item {
+                Spacer(Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable { gymExpanded = !gymExpanded }.padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("GYM", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                    Icon(if (gymExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, "Toggle Gym", tint = NothingMuted)
+                }
+                HorizontalDivider(color = NothingLine)
             }
-            HorizontalDivider(color = NothingLine)
-        }
-        if (gymExpanded) {
-            items(filteredGym, key = { "gym_${it.id}" }) { ex ->
-                ExerciseRow(ex, allAreas = vm.allAreas, onUpdate = { n, a -> vm.updateExercise(ex, n, a) }, onDelete = { vm.deleteExercise(ex) })
+            if (gymExpanded) {
+                items(filteredGym, key = { "gym_${it.id}" }) { ex ->
+                    ExerciseRow(
+                        exercise = ex, 
+                        allAreas = vm.allAreas, 
+                        accentColor = GymPurple,
+                        onUpdate = { n, a -> vm.updateExercise(ex, n, a) }, 
+                        onDelete = { vm.deleteExercise(ex) }
+                    )
+                }
+                item {
+                    Spacer(Modifier.height(8.dp))
+                    AddExerciseRow(
+                        areas = vm.allAreas, 
+                        accentColor = GymPurple,
+                        onAdd = { name, area -> vm.addCustomExercise(name, area, "gym") }
+                    )
+                }
+            }
+
+            item {
+                Spacer(Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable { flowExpanded = !flowExpanded }.padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("FLOW", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                    Icon(if (flowExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, "Toggle Flow", tint = NothingMuted)
+                }
+                HorizontalDivider(color = NothingLine)
+            }
+            if (flowExpanded) {
+                items(filteredFlow, key = { "flow_${it.id}" }) { ex ->
+                    ExerciseRow(
+                        exercise = ex, 
+                        allAreas = vm.allAreas, 
+                        accentColor = FlowBlue,
+                        onUpdate = { n, a -> vm.updateExercise(ex, n, a) }, 
+                        onDelete = { vm.deleteExercise(ex) }
+                    )
+                }
+                item {
+                    Spacer(Modifier.height(8.dp))
+                    AddExerciseRow(
+                        areas = vm.allAreas, 
+                        accentColor = FlowBlue,
+                        onAdd = { name, area -> vm.addCustomExercise(name, area, "flow") }
+                    )
+                }
             }
             item {
-                Spacer(Modifier.height(8.dp))
-                AddExerciseRow(areas = vm.allAreas, onAdd = { name, area ->
-                    vm.addCustomExercise(name, area, "gym")
-                })
-            }
-        }
-
-        item {
-            Spacer(Modifier.height(24.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth().clickable { flowExpanded = !flowExpanded }.padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Flow", style = MaterialTheme.typography.titleMedium, color = NothingMuted)
-                Icon(if (flowExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, "Toggle Flow", tint = NothingMuted)
-            }
-            HorizontalDivider(color = NothingLine)
-        }
-        if (flowExpanded) {
-            items(filteredFlow, key = { "flow_${it.id}" }) { ex ->
-                ExerciseRow(ex, allAreas = vm.allAreas, onUpdate = { n, a -> vm.updateExercise(ex, n, a) }, onDelete = { vm.deleteExercise(ex) })
-            }
-            item {
-                Spacer(Modifier.height(8.dp))
-                AddExerciseRow(areas = vm.allAreas, onAdd = { name, area ->
-                    vm.addCustomExercise(name, area, "flow")
-                })
+                Spacer(Modifier.height(32.dp))
             }
         }
     }
 }
 
 @Composable
-fun ExerciseRow(exercise: Exercise, allAreas: List<String>, onUpdate: (String, String) -> Unit, onDelete: () -> Unit) {
+fun ExerciseRow(exercise: Exercise, allAreas: List<String>, accentColor: Color, onUpdate: (String, String) -> Unit, onDelete: () -> Unit) {
     var isEditing by remember { mutableStateOf(false) }
 
     if (isEditing) {
@@ -150,34 +187,35 @@ fun ExerciseRow(exercise: Exercise, allAreas: List<String>, onUpdate: (String, S
             initialName = exercise.name,
             initialArea = exercise.area,
             areas = allAreas,
+            accentColor = accentColor,
             onSave = { n, a -> onUpdate(n, a); isEditing = false },
             onCancel = { isEditing = false }
         )
     } else {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { isEditing = true },
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { isEditing = true },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(exercise.name, style = MaterialTheme.typography.bodyMedium, color = NothingText, modifier = Modifier.weight(1f))
-            Surface(color = NothingSurface2, shape = MaterialTheme.shapes.extraSmall, modifier = Modifier.padding(horizontal = 4.dp)) {
-                Text(exercise.area, style = MaterialTheme.typography.labelSmall, color = NothingMuted, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
+            Text(exercise.name.uppercase(), style = MaterialTheme.typography.labelSmall, color = NothingText, modifier = Modifier.weight(1f))
+            Surface(color = NothingSurface2, shape = RoundedCornerShape(4.dp), modifier = Modifier.padding(horizontal = 4.dp)) {
+                Text(exercise.area.uppercase(), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp), color = NothingMuted, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
             }
             if (exercise.isCustom) {
                 Surface(
-                    color    = NothingLeafDim,
-                    shape    = MaterialTheme.shapes.extraSmall,
-                    modifier = Modifier.padding(horizontal = 4.dp)
+                    color    = Color.Transparent,
+                    shape    = RoundedCornerShape(4.dp),
+                    modifier = Modifier.padding(horizontal = 4.dp).border(1.dp, accentColor, RoundedCornerShape(4.dp))
                 ) {
                     Text(
-                        text     = "Custom",
-                        style    = MaterialTheme.typography.labelSmall,
-                        color    = NothingLeaf,
+                        text     = "CUSTOM",
+                        style    = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                        color    = accentColor,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
                 }
             }
             IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
-                Icon(Icons.Default.Delete, "Delete", tint = NothingFaint)
+                Icon(Icons.Default.Delete, "Delete", tint = NothingFaint, modifier = Modifier.size(16.dp))
             }
         }
     }
@@ -185,15 +223,15 @@ fun ExerciseRow(exercise: Exercise, allAreas: List<String>, onUpdate: (String, S
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddExerciseRow(areas: List<String>, onAdd: (String, String) -> Unit) {
+fun AddExerciseRow(areas: List<String>, accentColor: Color, onAdd: (String, String) -> Unit) {
     var name     by remember { mutableStateOf("") }
     var area     by remember { mutableStateOf(areas.first()) }
     var expanded by remember { mutableStateOf(false) }
 
     Surface(
-        color    = NothingSurface,
-        shape    = MaterialTheme.shapes.small,
-        modifier = Modifier.fillMaxWidth().border(1.dp, NothingLine, MaterialTheme.shapes.small)
+        color    = Color.Transparent,
+        shape    = RoundedCornerShape(6.dp),
+        modifier = Modifier.fillMaxWidth().border(1.dp, NothingLine, RoundedCornerShape(6.dp))
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -203,17 +241,18 @@ fun AddExerciseRow(areas: List<String>, onAdd: (String, String) -> Unit) {
             OutlinedTextField(
                 value         = name,
                 onValueChange = { name = it },
-                label         = { Text("Name", style = MaterialTheme.typography.labelSmall) },
-                textStyle     = MaterialTheme.typography.bodySmall,
+                label         = { Text("NAME", style = MaterialTheme.typography.labelSmall) },
+                textStyle     = MaterialTheme.typography.labelSmall,
                 singleLine    = true,
+                shape         = RoundedCornerShape(4.dp),
                 modifier      = Modifier.weight(1f),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor   = NothingRed,
+                    focusedBorderColor   = accentColor,
                     unfocusedBorderColor = NothingLine,
                     focusedTextColor     = NothingText,
                     unfocusedTextColor   = NothingText,
-                    cursorColor          = NothingRed,
-                    focusedLabelColor    = NothingRed,
+                    cursorColor          = accentColor,
+                    focusedLabelColor    = accentColor,
                     unfocusedLabelColor  = NothingMuted
                 )
             )
@@ -226,16 +265,17 @@ fun AddExerciseRow(areas: List<String>, onAdd: (String, String) -> Unit) {
                     value         = area,
                     onValueChange = {},
                     readOnly      = true,
-                    label         = { Text("Area", style = MaterialTheme.typography.labelSmall) },
-                    textStyle     = MaterialTheme.typography.bodySmall,
+                    label         = { Text("AREA", style = MaterialTheme.typography.labelSmall) },
+                    textStyle     = MaterialTheme.typography.labelSmall,
                     trailingIcon  = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+                    shape         = RoundedCornerShape(4.dp),
                     modifier      = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor   = NothingRed,
+                        focusedBorderColor   = accentColor,
                         unfocusedBorderColor = NothingLine,
                         focusedTextColor     = NothingText,
                         unfocusedTextColor   = NothingText,
-                        focusedLabelColor    = NothingRed,
+                        focusedLabelColor    = accentColor,
                         unfocusedLabelColor  = NothingMuted
                     )
                 )
@@ -246,14 +286,14 @@ fun AddExerciseRow(areas: List<String>, onAdd: (String, String) -> Unit) {
                 ) {
                     areas.forEach { a ->
                         DropdownMenuItem(
-                            text    = { Text(a, color = NothingText, style = MaterialTheme.typography.bodySmall) },
+                            text    = { Text(a.uppercase(), color = NothingText, style = MaterialTheme.typography.labelSmall) },
                             onClick = { area = a; expanded = false }
                         )
                     }
                 }
             }
             IconButton(onClick = { onAdd(name, area); name = "" }, enabled = name.isNotBlank()) {
-                Icon(Icons.Default.Add, "Add", tint = if (name.isNotBlank()) NothingRed else NothingFaint)
+                Icon(Icons.Default.Add, "Add", tint = if (name.isNotBlank()) accentColor else NothingFaint)
             }
         }
     }
@@ -261,15 +301,15 @@ fun AddExerciseRow(areas: List<String>, onAdd: (String, String) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditExerciseRow(initialName: String, initialArea: String, areas: List<String>, onSave: (String, String) -> Unit, onCancel: () -> Unit) {
+fun EditExerciseRow(initialName: String, initialArea: String, areas: List<String>, accentColor: Color, onSave: (String, String) -> Unit, onCancel: () -> Unit) {
     var name     by remember { mutableStateOf(initialName) }
     var area     by remember { mutableStateOf(initialArea) }
     var expanded by remember { mutableStateOf(false) }
 
     Surface(
-        color    = NothingSurface,
-        shape    = MaterialTheme.shapes.small,
-        modifier = Modifier.fillMaxWidth().border(1.dp, NothingRed, MaterialTheme.shapes.small)
+        color    = Color.Transparent,
+        shape    = RoundedCornerShape(6.dp),
+        modifier = Modifier.fillMaxWidth().border(1.dp, accentColor, RoundedCornerShape(6.dp))
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -279,17 +319,18 @@ fun EditExerciseRow(initialName: String, initialArea: String, areas: List<String
             OutlinedTextField(
                 value         = name,
                 onValueChange = { name = it },
-                label         = { Text("Name", style = MaterialTheme.typography.labelSmall) },
-                textStyle     = MaterialTheme.typography.bodySmall,
+                label         = { Text("NAME", style = MaterialTheme.typography.labelSmall) },
+                textStyle     = MaterialTheme.typography.labelSmall,
                 singleLine    = true,
+                shape         = RoundedCornerShape(4.dp),
                 modifier      = Modifier.weight(1f),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor   = NothingRed,
+                    focusedBorderColor   = accentColor,
                     unfocusedBorderColor = NothingLine,
                     focusedTextColor     = NothingText,
                     unfocusedTextColor   = NothingText,
-                    cursorColor          = NothingRed,
-                    focusedLabelColor    = NothingRed,
+                    cursorColor          = accentColor,
+                    focusedLabelColor    = accentColor,
                     unfocusedLabelColor  = NothingMuted
                 )
             )
@@ -302,16 +343,17 @@ fun EditExerciseRow(initialName: String, initialArea: String, areas: List<String
                     value         = area,
                     onValueChange = {},
                     readOnly      = true,
-                    label         = { Text("Area", style = MaterialTheme.typography.labelSmall) },
-                    textStyle     = MaterialTheme.typography.bodySmall,
+                    label         = { Text("AREA", style = MaterialTheme.typography.labelSmall) },
+                    textStyle     = MaterialTheme.typography.labelSmall,
                     trailingIcon  = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+                    shape         = RoundedCornerShape(4.dp),
                     modifier      = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor   = NothingRed,
+                        focusedBorderColor   = accentColor,
                         unfocusedBorderColor = NothingLine,
                         focusedTextColor     = NothingText,
                         unfocusedTextColor   = NothingText,
-                        focusedLabelColor    = NothingRed,
+                        focusedLabelColor    = accentColor,
                         unfocusedLabelColor  = NothingMuted
                     )
                 )
@@ -322,17 +364,17 @@ fun EditExerciseRow(initialName: String, initialArea: String, areas: List<String
                 ) {
                     areas.forEach { a ->
                         DropdownMenuItem(
-                            text    = { Text(a, color = NothingText, style = MaterialTheme.typography.bodySmall) },
+                            text    = { Text(a.uppercase(), color = NothingText, style = MaterialTheme.typography.labelSmall) },
                             onClick = { area = a; expanded = false }
                         )
                     }
                 }
             }
             IconButton(onClick = onCancel) {
-                Icon(Icons.Default.Delete, "Cancel", tint = NothingMuted)
+                Icon(Icons.Default.Clear, "Cancel", tint = NothingMuted)
             }
             IconButton(onClick = { onSave(name, area) }, enabled = name.isNotBlank()) {
-                Icon(Icons.Default.Add, "Save", tint = if (name.isNotBlank()) NothingRed else NothingFaint)
+                Icon(Icons.Default.Check, "Save", tint = if (name.isNotBlank()) accentColor else NothingFaint)
             }
         }
     }

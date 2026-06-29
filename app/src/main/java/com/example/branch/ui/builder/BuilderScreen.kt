@@ -5,14 +5,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.branch.data.model.Exercise
@@ -30,9 +33,11 @@ fun BuilderScreen(
     )
 ) {
     val exercises by vm.exercises.collectAsStateWithLifecycle()
+    val accentColor = if (vm.isFlow) FlowBlue else GymPurple
 
     Scaffold(
-        containerColor = NothingBg,
+        modifier = Modifier.dotMatrixBackground(),
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 navigationIcon = {
@@ -43,7 +48,7 @@ fun BuilderScreen(
                 title = {
                     Text(
                         (if (vm.isFlow) "FLOW" else "GYM") + if (workoutId == null) " BUILDER" else " EDIT",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.displaySmall.copy(fontSize = 24.sp, letterSpacing = (-1.0).sp),
                         color = NothingText
                     )
                 },
@@ -54,10 +59,10 @@ fun BuilderScreen(
                         }
                     }
                     IconButton(onClick = { vm.save(onBack) }) {
-                        Icon(Icons.Default.Check, "Save", tint = NothingRed)
+                        Icon(Icons.Default.Check, "Save", tint = accentColor)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = NothingSurface)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
@@ -73,13 +78,14 @@ fun BuilderScreen(
                     label         = { Text(if (vm.isFlow) "FLOW NAME" else "WORKOUT NAME", style = MaterialTheme.typography.labelSmall) },
                     singleLine    = true,
                     modifier      = Modifier.fillMaxWidth(),
+                    shape         = RoundedCornerShape(6.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor   = NothingRed,
+                        focusedBorderColor   = accentColor,
                         unfocusedBorderColor = NothingLine,
                         focusedTextColor     = NothingText,
                         unfocusedTextColor   = NothingText,
-                        cursorColor          = NothingRed,
-                        focusedLabelColor    = NothingRed,
+                        cursorColor          = accentColor,
+                        focusedLabelColor    = accentColor,
                         unfocusedLabelColor  = NothingMuted
                     )
                 )
@@ -89,6 +95,7 @@ fun BuilderScreen(
                     step        = step,
                     isFlow      = vm.isFlow,
                     exercises   = exercises,
+                    accentColor = accentColor,
                     onUpdate    = { vm.updateStep(index, it) },
                     onDelete    = { vm.removeStep(index) },
                     onAddCustom = { name, area, cb -> vm.addCustomExercise(name, area, cb) }
@@ -98,7 +105,9 @@ fun BuilderScreen(
                 OutlinedButton(
                     onClick   = vm::addStep,
                     modifier  = Modifier.fillMaxWidth(),
-                    colors    = ButtonDefaults.outlinedButtonColors(contentColor = NothingMuted)
+                    shape     = RoundedCornerShape(6.dp),
+                    border    = androidx.compose.foundation.BorderStroke(1.dp, accentColor),
+                    colors    = ButtonDefaults.outlinedButtonColors(contentColor = accentColor)
                 ) {
                     Icon(Icons.Default.Add, null)
                     Spacer(Modifier.width(8.dp))
@@ -114,6 +123,7 @@ fun StepCard(
     step:        StepDraft,
     isFlow:      Boolean,
     exercises:   List<Exercise>,
+    accentColor: Color,
     onUpdate:    (StepDraft) -> Unit,
     onDelete:    () -> Unit,
     onAddCustom: (String, String, (Exercise) -> Unit) -> Unit,
@@ -125,6 +135,7 @@ fun StepCard(
         ExercisePickerDialog(
             exercises      = exercises,
             search         = pickerSearch,
+            accentColor    = accentColor,
             onSearchChange = { pickerSearch = it },
             onSelect       = { ex -> onUpdate(step.copy(exercise = ex)); showPicker = false; pickerSearch = "" },
             onDismiss      = { showPicker = false; pickerSearch = "" }
@@ -132,21 +143,21 @@ fun StepCard(
     }
 
     Surface(
-        color    = NothingSurface,
-        shape    = MaterialTheme.shapes.small,
-        modifier = Modifier.fillMaxWidth().border(1.dp, NothingLine, MaterialTheme.shapes.small)
+        color    = Color.Transparent,
+        shape    = RoundedCornerShape(6.dp),
+        modifier = Modifier.fillMaxWidth().border(1.dp, accentColor, RoundedCornerShape(6.dp))
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = { showPicker = true }, modifier = Modifier.weight(1f)) {
                     Text(
                         step.exercise?.name?.uppercase() ?: "TAP TO SELECT EXERCISE",
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.labelMedium,
                         color = if (step.exercise != null) NothingText else NothingFaint
                     )
                 }
                 IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
-                    Icon(Icons.Default.Delete, "Remove", tint = NothingFaint)
+                    Icon(Icons.Default.Delete, "Remove", tint = NothingFaint, modifier = Modifier.size(16.dp))
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -181,7 +192,14 @@ fun StepCard(
                 Switch(
                     checked         = step.sides,
                     onCheckedChange = { onUpdate(step.copy(sides = it)) },
-                    colors = SwitchDefaults.colors(checkedThumbColor = NothingRed, checkedTrackColor = NothingLeafDim)
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = accentColor, 
+                        checkedTrackColor = NothingSurface2,
+                        uncheckedThumbColor = NothingMuted,
+                        uncheckedTrackColor = NothingSurface2,
+                        uncheckedBorderColor = Color.Transparent,
+                        checkedBorderColor = Color.Transparent
+                    )
                 )
             }
             if (step.sides) {
@@ -193,7 +211,7 @@ fun StepCard(
                     modifier = Modifier.fillMaxWidth(0.38f)
                 )
             }
-            Text(step.summary(isFlow), style = MaterialTheme.typography.bodySmall, color = NothingMuted)
+            Text(step.summary(isFlow).uppercase(), style = MaterialTheme.typography.labelSmall, color = NothingMuted)
         }
     }
 }
@@ -208,7 +226,7 @@ fun StepCounter(label: String, value: Int, onMinus: () -> Unit, onPlus: () -> Un
             }
             Text(
                 "$value",
-                style    = MaterialTheme.typography.titleSmall,
+                style    = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp),
                 color    = NothingText,
                 modifier = Modifier.width(36.dp),
                 textAlign = TextAlign.Center
@@ -224,6 +242,7 @@ fun StepCounter(label: String, value: Int, onMinus: () -> Unit, onPlus: () -> Un
 fun ExercisePickerDialog(
     exercises:      List<Exercise>,
     search:         String,
+    accentColor:    Color,
     onSearchChange: (String) -> Unit,
     onSelect:       (Exercise) -> Unit,
     onDismiss:      () -> Unit,
@@ -231,20 +250,22 @@ fun ExercisePickerDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor   = NothingSurface,
+        shape            = RoundedCornerShape(6.dp),
         title = {
             OutlinedTextField(
                 value         = search,
                 onValueChange = onSearchChange,
-                label         = { Text("Search", style = MaterialTheme.typography.labelSmall) },
+                label         = { Text("SEARCH", style = MaterialTheme.typography.labelSmall) },
                 singleLine    = true,
                 modifier      = Modifier.fillMaxWidth(),
+                shape         = RoundedCornerShape(4.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor   = NothingRed,
+                    focusedBorderColor   = accentColor,
                     unfocusedBorderColor = NothingLine,
                     focusedTextColor     = NothingText,
                     unfocusedTextColor   = NothingText,
-                    cursorColor          = NothingRed,
-                    focusedLabelColor    = NothingRed,
+                    cursorColor          = accentColor,
+                    focusedLabelColor    = accentColor,
                     unfocusedLabelColor  = NothingMuted
                 )
             )
@@ -258,8 +279,8 @@ fun ExercisePickerDialog(
                 items(filtered) { ex ->
                     TextButton(onClick = { onSelect(ex) }, modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(ex.name, style = MaterialTheme.typography.bodyMedium, color = NothingText)
-                            Text(ex.area, style = MaterialTheme.typography.labelSmall, color = NothingMuted)
+                            Text(ex.name.uppercase(), style = MaterialTheme.typography.labelMedium, color = NothingText)
+                            Text(ex.area.uppercase(), style = MaterialTheme.typography.labelSmall, color = NothingMuted)
                         }
                     }
                 }
@@ -267,7 +288,7 @@ fun ExercisePickerDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", style = MaterialTheme.typography.labelLarge, color = NothingMuted)
+                Text("CANCEL", style = MaterialTheme.typography.labelSmall, color = NothingMuted)
             }
         }
     )

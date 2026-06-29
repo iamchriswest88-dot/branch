@@ -3,17 +3,22 @@ package com.example.branch.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 val BranchColorScheme = darkColorScheme(
-    primary              = NothingRed,
+    primary              = GymPurple,
     onPrimary            = NothingText,
     primaryContainer     = NothingSurface2,
     onPrimaryContainer   = NothingText,
-    secondary            = NothingLeaf,
+    secondary            = FlowBlue,
     onSecondary          = NothingBg,
-    secondaryContainer   = NothingLeafDim,
-    onSecondaryContainer = NothingLeaf,
-    tertiary             = NothingEmblA,
+    secondaryContainer   = NothingSurface,
+    onSecondaryContainer = FlowBlue,
+    tertiary             = PhaseWork,
     background           = NothingBg,
     onBackground         = NothingText,
     surface              = NothingSurface,
@@ -22,7 +27,7 @@ val BranchColorScheme = darkColorScheme(
     onSurfaceVariant     = NothingMuted,
     outline              = NothingLine,
     outlineVariant       = NothingLine2,
-    error                = NothingRed,
+    error                = PhaseRest,
     onError              = NothingText,
 )
 
@@ -34,3 +39,20 @@ fun BranchTheme(content: @Composable () -> Unit) {
         content     = content
     )
 }
+
+fun Modifier.dotMatrixBackground(): Modifier = this.then(
+    drawBehind {
+        val dotColor = Color(0xFF181818)
+        val spacing = 15.dp.toPx()
+        val dotRadius = 0.5.dp.toPx()
+        var y = 0f
+        while (y < size.height) {
+            var x = 0f
+            while (x < size.width) {
+                drawCircle(color = dotColor, radius = dotRadius, center = Offset(x, y))
+                x += spacing
+            }
+            y += spacing
+        }
+    }
+)

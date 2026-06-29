@@ -1,17 +1,19 @@
 package com.example.branch.ui.flow
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.branch.theme.*
@@ -41,75 +43,113 @@ fun FlowScreen(
     val flowPlanned = planDay?.hasFlow == true && !flowDone
 
     Scaffold(
-        containerColor = NothingBg,
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text  = { Text("New Flow", style = MaterialTheme.typography.labelLarge) },
-                icon  = { Icon(Icons.Default.Add, null) },
-                onClick = onNewWorkout,
-                containerColor = NothingLeaf,
-                contentColor   = NothingBg
-            )
-        }
+        modifier = Modifier.dotMatrixBackground(),
+        containerColor = Color.Transparent
     ) { padding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(vertical = 24.dp)
         ) {
             item {
-                Text("Branch", style = MaterialTheme.typography.displaySmall, color = NothingText)
-                Text("Flow",   style = MaterialTheme.typography.titleLarge,   color = NothingMuted)
+                Text(
+                    text = "Branch", 
+                    style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), 
+                    color = NothingText
+                )
+                Text(
+                    text = "FLOW",    
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 4.sp),   
+                    color = NothingMuted
+                )
             }
             item {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp), contentAlignment = Alignment.Center) {
                     EmblemView(filledSections = flowStreak, style = EmblemStyle.FLOW, isPlannedToday = flowPlanned)
                 }
             }
             item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, NothingLine, RoundedCornerShape(6.dp))
+                        .padding(vertical = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
                     StatChip("$flowStreak/6",  "SECTIONS")
                     StatChip("$totalSessions", "TOTAL")
                 }
             }
             item {
-                Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text("Show On Glyph", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
-                        Switch(
-                            checked = showOnGlyph,
-                            onCheckedChange = { vm.toggleGlyph() },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = NothingLeaf,
-                                checkedTrackColor = NothingLeafDim
-                            )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("SHOW ON GLYPH", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                    Switch(
+                        checked = showOnGlyph,
+                        onCheckedChange = { vm.toggleGlyph() },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = FlowBlue,
+                            checkedTrackColor = NothingSurface2,
+                            uncheckedThumbColor = NothingMuted,
+                            uncheckedTrackColor = NothingSurface2,
+                            uncheckedBorderColor = Color.Transparent,
+                            checkedBorderColor = Color.Transparent
                         )
-                    }
-
+                    )
                 }
+                HorizontalDivider(color = NothingLine)
             }
             item {
-                HorizontalDivider(color = NothingLine)
                 Spacer(Modifier.height(8.dp))
-                Text("Flows", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                Text("FLOWS", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
             }
             if (workouts.isEmpty()) {
                 item {
-                    Text("No flows yet. Tap New Flow.", style = MaterialTheme.typography.bodySmall, color = NothingFaint)
+                    Text(
+                        text  = "No flows yet.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = NothingFaint
+                    )
                 }
             } else {
                 items(workouts, key = { it.id }) { workout ->
                     WorkoutCard(
-                        name     = workout.name,
-                        onRun    = { onRunWorkout(workout.id) },
-                        onEdit   = { onEditWorkout(workout.id) },
-                        onDelete = { vm.deleteWorkout(workout.id) }
+                        name        = workout.name,
+                        accentColor = FlowBlue,
+                        onRun       = { onRunWorkout(workout.id) },
+                        onEdit      = { onEditWorkout(workout.id) },
+                        onDelete    = { vm.deleteWorkout(workout.id) }
                     )
                 }
+            }
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onNewWorkout() }
+                        .border(
+                            width = 1.dp, 
+                            color = NothingLine2, 
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "+ NEW FLOW", 
+                        style = MaterialTheme.typography.labelMedium, 
+                        color = FlowBlue
+                    )
+                }
+            }
+            item {
+                Spacer(Modifier.height(32.dp))
             }
         }
     }

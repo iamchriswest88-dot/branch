@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @font-face{font-family:'NType82';src:url('uploads/NType82-Headline.otf') format('opentype');font-weight:400 700;font-display:swap;}
+    @font-face{font-family:'Space Grotesk';src:url('uploads/SpaceGrotesk-Regular.otf') format('opentype');font-weight:400 700;font-display:swap;}
+    @font-face{font-family:'Lettera Mono';src:url('uploads/LetteraMonoLL-Regular.otf') format('opentype');font-display:swap;}
+    body{margin:0;}
+  </style>
+</helmet>
+<div style="width:1440px;min-height:940px;box-sizing:border-box;display:flex;gap:14px;padding:14px;background:radial-gradient(#171717 1px,transparent 1.5px) 0 0/16px 16px,#0A0A0A;font-family:'Space Grotesk',sans-serif;color:#EDEDED;">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside style="width:212px;flex:0 0 auto;background:#0D0D0D;border:1px solid #1F1F1F;border-radius:16px;display:flex;flex-direction:column;padding:20px 0;">
+    <div style="padding:0 20px 20px;display:flex;align-items:center;gap:11px;">
+      <div style="width:34px;height:34px;border-radius:9px;border:1.5px solid #9B5CF0;display:flex;align-items:center;justify-content:center;"><div style="display:grid;grid-template-columns:repeat(3,3px);gap:2px;"><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div><div style="width:3px;height:3px;border-radius:50%;background:#3a2a55;"></div><div style="width:3px;height:3px;border-radius:50%;background:#9B5CF0;"></div></div></div>
+      <div style="font-family:'NType82',sans-serif;font-size:20px;color:#EDEDED;">Branch</div>
+    </div>
+    <nav style="padding:0 12px;display:flex;flex-direction:column;gap:2px;">
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-dashboard"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Dashboard</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;background:#17121F;border-left:2px solid #9B5CF0;color:#C7A8FF;cursor:pointer;" data-action="nav-gym"><span style="width:5px;height:5px;border-radius:1px;background:#9B5CF0;"></span><span style="font-size:13.5px;font-weight:500;">Gym</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-flow"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Flow</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-plan"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Plan</span></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;cursor:pointer;" data-action="nav-library"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Library</span></div>
+      <div style="height:1px;background:#1b1b1b;margin:7px 10px;"></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:#8A8A8A;"><span style="width:5px;height:5px;border-radius:1px;background:#3a3a3a;"></span><span style="font-size:13.5px;">Glyph Interface</span></div>
+    </nav>
+    <div style="flex:1;"></div>
+    <div style="padding:0 14px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;background:#141414;border:1px solid #1f1f1f;">
+        <div style="width:30px;height:30px;border-radius:50%;background:#9B5CF0;display:flex;align-items:center;justify-content:center;font-family:'Lettera Mono',monospace;font-size:11px;color:#0A0A0A;font-weight:700;">CW</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:12.5px;color:#EDEDED;font-weight:500;">Chris West</div><div style="font-family:'Lettera Mono',monospace;font-size:10px;color:#5A5A5A;">Phone (3)</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;">
+
+    <!-- topbar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 4px 0;">
+      <div>
+        <div style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:2px;color:#5A5A5A;">GYM / NEW</div>
+        <div style="font-family:'NType82',sans-serif;font-size:28px;letter-spacing:-0.5px;color:#EDEDED;line-height:1;margin-top:6px;">New Workout</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="border:1px solid #262626;border-radius:22px;padding:11px 20px;font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:1.5px;color:#8A8A8A;cursor:pointer;" data-action="nav-dashboard">CANCEL</div>
+        <div style="background:#9B5CF0;border-radius:22px;padding:11px 22px;font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:1.5px;color:#fff;cursor:pointer;" data-action="save-workout">SAVE WORKOUT</div>
+      </div>
+    </div>
+
+    <div style="flex:1;display:flex;gap:14px;min-height:0;">
+
+      <!-- LEFT: builder -->
+      <div style="flex:1.55;display:flex;flex-direction:column;gap:14px;min-width:0;">
+        <!-- name + summary -->
+        <div style="background:#0D0D0D;border:1px solid #262626;border-radius:16px;padding:20px;display:flex;align-items:center;gap:20px;">
+          <div style="flex:1;border:1px solid #2A2233;border-radius:10px;padding:13px 16px;background:linear-gradient(180deg,rgba(155,92,240,0.05),transparent);">
+            <div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:2px;color:#9B5CF0;">WORKOUT NAME</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><input style="font-family:'Space Grotesk',sans-serif;font-size:19px;color:#EDEDED;background:transparent;border:none;outline:none;" value="{{ workoutName }}" oninput="window.builderComponent.state.workoutName = this.value"><span style="width:2px;height:19px;background:#9B5CF0;"></span></div>
+          </div>
+          <div style="display:flex;gap:26px;padding-right:6px;">
+            <div><div style="font-family:'Lettera Mono',monospace;font-size:20px;color:#EDEDED;">{{ estMin }}</div><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:3px;">EST. MIN</div></div>
+            <div><div style="font-family:'Lettera Mono',monospace;font-size:20px;color:#EDEDED;">{{ stepCount }}</div><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:3px;">STEPS</div></div>
+            <div><div style="font-family:'Lettera Mono',monospace;font-size:20px;color:#EDEDED;">{{ totalSets }}</div><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-top:3px;">SETS</div></div>
+          </div>
+        </div>
+
+        <!-- steps -->
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+            <div style="background:#0D0D0D;border:1px solid #262626;border-radius:14px;padding:18px;">
+              <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+                <span style="font-family:'Lettera Mono',monospace;font-size:12px;color:#5A5A5A;">{{ st.idx }}</span>
+                <span style="flex:1;font-family:'Lettera Mono',monospace;font-size:14px;letter-spacing:1px;color:#EDEDED;">{{ st.name }}</span>
+                <span style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:0.5px;color:#8A8A8A;background:#1B1B1B;border-radius:5px;padding:4px 9px;">{{ st.area }}</span>
+                <span style="color:#5A5A5A;font-size:15px;cursor:pointer;" data-action="remove-step" data-idx="{{ st.realIdx }}">⌫</span>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:22px;">
+                <sc-for list="{{ st.counters }}" as="ct" hint-placeholder-count="3">
+                  <div style="text-align:center;"><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#8A8A8A;margin-bottom:9px;">{{ ct.label }}</div><div style="display:flex;align-items:center;justify-content:center;gap:9px;"><div style="width:26px;height:26px;border-radius:50%;border:1px solid #333;color:#8A8A8A;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;cursor:pointer;user-select:none;" data-action="update-counter" data-idx="{{ ct.stepIdx }}" data-field="{{ ct.field }}" data-delta="-1">−</div><span style="font-family:'Lettera Mono',monospace;font-size:15px;color:#EDEDED;width:28px;text-align:center;">{{ ct.value }}</span><div style="width:26px;height:26px;border-radius:50%;border:1px solid #9B5CF0;color:#C7A8FF;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;cursor:pointer;user-select:none;" data-action="update-counter" data-idx="{{ ct.stepIdx }}" data-field="{{ ct.field }}" data-delta="1">+</div></div></div>
+                </sc-for>
+                <div style="flex:1;"></div>
+                <div style="display:flex;align-items:center;gap:11px;"><span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:1.5px;color:{{ st.bsLabelColor }};">BOTH SIDES</span><div style="width:42px;height:24px;border-radius:12px;background:{{ st.bsTrackBg }};border:1px solid {{ st.bsTrackBorder }};position:relative;cursor:pointer;" data-action="toggle-both" data-idx="{{ st.realIdx }}"><div style="position:absolute;top:2px;width:18px;height:18px;border-radius:50%;background:{{ st.bsThumb }};{{ st.bsThumbPos }}"></div></div></div>
+              </div>
+            </div>
+          </sc-for>
+          <div style="border:1px dashed #333;border-radius:14px;padding:16px;text-align:center;font-family:'Lettera Mono',monospace;font-size:12px;letter-spacing:2px;color:#8A8A8A;">+ ADD STEP</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: exercise library -->
+      <div style="flex:1;background:#0D0D0D;border:1px solid #262626;border-radius:16px;display:flex;flex-direction:column;min-width:0;overflow:hidden;">
+        <div style="padding:18px 18px 12px;">
+          <div style="font-family:'Lettera Mono',monospace;font-size:11px;letter-spacing:2px;color:#8A8A8A;">EXERCISE LIBRARY</div>
+          <div style="margin-top:12px;border:1px solid #262626;border-radius:20px;padding:9px 14px;display:flex;align-items:center;gap:9px;"><span style="color:#5A5A5A;font-size:13px;">⌕</span><span style="font-family:'Lettera Mono',monospace;font-size:11px;color:#5A5A5A;">Search exercises…</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;">
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#0A0A0A;background:#9B5CF0;border-radius:12px;padding:5px 11px;">ALL</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">CHEST</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">BACK</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">SHOULDERS</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">CORE</span>
+            <span style="font-family:'Lettera Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#8A8A8A;border:1px solid #262626;border-radius:12px;padding:5px 11px;">QUADS</span>
+          </div>
+        </div>
+        <div style="flex:1;overflow:hidden;border-top:1px solid #1b1b1b;">
+          <sc-for list="{{ library }}" as="ex" hint-placeholder-count="11">
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid #161616;">
+              <div style="flex:1;min-width:0;"><div style="font-size:13.5px;color:#EDEDED;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ ex.name }}</div><div style="font-family:'Lettera Mono',monospace;font-size:9px;letter-spacing:1px;color:#5A5A5A;margin-top:3px;">{{ ex.area }}</div></div>
+              <div style="width:26px;height:26px;border-radius:50%;border:1px solid #9B5CF0;color:#C7A8FF;display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;flex-shrink:0;cursor:pointer;user-select:none;" data-action="add-step" data-id="{{ ex.id }}">+</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+</x-dc>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:940}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      library: [], 
+      rawSteps: [],
+      workoutName: 'New Workout',
+      workoutCategory: 'gym'
+    };
+    window.builderComponent = this;
+  }
+
+  componentDidMount() {
+    if (window.fetchBuilderData) window.fetchBuilderData();
+  }
+
+  addStep(exId) {
+    const ex = this.state.library.find(e => e.id === exId);
+    if (!ex) return;
+    this.state.rawSteps.push({
+      exercise_id: ex.id,
+      name: ex.name,
+      area: ex.area,
+      sets: 3,
+      work: 30,
+      rest: 15,
+      both: false,
+      swap: 0
+    });
+    this.forceUpdate();
+  }
+
+  removeStep(idx) {
+    this.state.rawSteps.splice(idx, 1);
+    this.forceUpdate();
+  }
+
+  updateCounter(idx, field, delta) {
+    const step = this.state.rawSteps[idx];
+    if (field === 'sets') step.sets = Math.max(1, step.sets + delta);
+    if (field === 'work') step.work = Math.max(0, step.work + delta);
+    if (field === 'rest') step.rest = Math.max(0, step.rest + delta);
+    if (field === 'swap') step.swap = Math.max(0, step.swap + delta);
+    this.forceUpdate();
+  }
+
+  toggleBothSides(idx) {
+    const step = this.state.rawSteps[idx];
+    step.both = !step.both;
+    if (step.both && step.swap === 0) step.swap = 5;
+    this.forceUpdate();
+  }
+
+  save() {
+    if (this.state.rawSteps.length === 0) { alert("Add steps first"); return; }
+    if (window.saveWorkout) window.saveWorkout({
+      name: this.state.workoutName,
+      category: this.state.workoutCategory,
+      rawSteps: this.state.rawSteps
+    });
+  }
+
+  renderVals() {
+    const steps = this.state.rawSteps.map((s, i) => {
+      const counters = [
+        { label: 'SETS', value: s.sets, field: 'sets', stepIdx: i },
+        { label: 'WORK S', value: s.work, field: 'work', stepIdx: i },
+        { label: 'REST S', value: s.rest, field: 'rest', stepIdx: i },
+      ];
+      if (s.both) counters.push({ label: 'SWAP S', value: s.swap, field: 'swap', stepIdx: i });
+      return {
+        idx: String(i + 1).padStart(2, '0'),
+        realIdx: i,
+        name: s.name.toUpperCase(),
+        area: s.area,
+        counters,
+        bsLabelColor: s.both ? '#C7A8FF' : '#8A8A8A',
+        bsTrackBg: s.both ? '#241A33' : '#1B1B1B',
+        bsTrackBorder: s.both ? '#9B5CF0' : '#333',
+        bsThumb: s.both ? '#9B5CF0' : '#5A5A5A',
+        bsThumbPos: s.both ? 'right:2px;' : 'left:2px;',
+      };
+    });
+    
+    const totalSets = this.state.rawSteps.reduce((a, s) => a + s.sets, 0);
+    const estSec = this.state.rawSteps.reduce((a, s) => a + s.sets * (s.work + s.rest) * (s.both ? 2 : 1), 0);
+    const estMin = Math.max(1, Math.round(estSec / 60));
+    
+    return { 
+      steps, 
+      library: this.state.library, 
+      totalSets, 
+      estMin, 
+      stepCount: this.state.rawSteps.length,
+      workoutName: this.state.workoutName 
+    };
+  }
+}
+</script>
+</body>
+</html>
+
+
+

@@ -2,6 +2,7 @@ package com.example.branch.ui.runner
 
 import android.view.WindowManager
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -11,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.branch.theme.*
@@ -39,7 +42,7 @@ fun RunnerScreen(
 
     when {
         state.isLoading  -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = NothingRed)
+            CircularProgressIndicator(color = PhaseRest)
         }
         state.isFinished -> CompletionScreen(
             category   = state.category,
@@ -70,16 +73,16 @@ fun ActiveRunnerScreen(
             modifier = Modifier.fillMaxSize().padding(16.dp),
         ) {
             val phaseColor = when (state.phaseLabel) {
-                "WORK" -> NothingLeaf
-                "REST" -> NothingRed
+                "WORK" -> PhaseWork
+                "REST", "SWAP" -> PhaseRest
                 else   -> NothingMuted
             }
 
             // Phase label + close
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    state.phaseLabel,
-                    style = MaterialTheme.typography.labelLarge,
+                    state.phaseLabel.uppercase(),
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 2.sp),
                     color = phaseColor
                 )
                 IconButton(onClick = onExit) {
@@ -107,13 +110,13 @@ fun ActiveRunnerScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Text(
                         state.exerciseName.uppercase(),
-                        style     = MaterialTheme.typography.headlineSmall,
+                        style     = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp),
                         color     = NothingText,
                         textAlign = TextAlign.Center
                     )
                     if (state.sideLabel.isNotEmpty()) {
-                        Spacer(Modifier.height(4.dp))
-                        Text(state.sideLabel, style = MaterialTheme.typography.titleLarge, color = NothingLeaf)
+                        Spacer(Modifier.height(8.dp))
+                        Text(state.sideLabel.uppercase(), style = MaterialTheme.typography.labelMedium, color = phaseColor)
                     }
                 }
 
@@ -133,7 +136,7 @@ fun ActiveRunnerScreen(
                         )
                         Text(
                             "SET ${state.currentSet} / ${state.totalSets}",
-                            style     = MaterialTheme.typography.labelMedium,
+                            style     = MaterialTheme.typography.labelSmall,
                             color     = NothingMuted,
                             modifier  = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
@@ -155,7 +158,8 @@ fun ActiveRunnerScreen(
                         }
                         FilledIconButton(
                             onClick = onPauseResume,
-                            colors  = IconButtonDefaults.filledIconButtonColors(containerColor = NothingSurface2)
+                            colors  = IconButtonDefaults.filledIconButtonColors(containerColor = NothingSurface2),
+                            shape   = RoundedCornerShape(16.dp)
                         ) {
                             Icon(
                                 if (state.isPaused) Icons.Default.PlayArrow else Icons.Default.Pause,
@@ -180,36 +184,39 @@ fun CompletionScreen(
     flowStreak: Int,
     onDone:     () -> Unit
 ) {
-    val style  = if (category == "gym") EmblemStyle.GYM else EmblemStyle.FLOW
-    val streak = if (category == "gym") gymStreak else flowStreak
-    val label  = if (category == "gym") "GYM" else "FLOW"
+    val style       = if (category == "gym") EmblemStyle.GYM else EmblemStyle.FLOW
+    val streak      = if (category == "gym") gymStreak else flowStreak
+    val label       = if (category == "gym") "GYM" else "FLOW"
+    val accentColor = if (category == "gym") GymPurple else FlowBlue
 
-    Surface(modifier = Modifier.fillMaxSize(), color = NothingBg) {
+    Scaffold(
+        modifier = Modifier.dotMatrixBackground(),
+        containerColor = Color.Transparent
+    ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(32.dp),
+            modifier = Modifier.fillMaxSize().padding(padding).padding(32.dp),
             verticalArrangement   = Arrangement.Center,
             horizontalAlignment   = Alignment.CenterHorizontally
         ) {
-            Text("Session Complete", style = MaterialTheme.typography.titleLarge, color = NothingRed)
+            Text("SESSION COMPLETE", style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), color = accentColor, textAlign = TextAlign.Center)
             Spacer(Modifier.height(32.dp))
-            EmblemView(filledSections = streak, style = style)
-            Spacer(Modifier.height(24.dp))
-            Text("$label • $streak/6 Sections", style = MaterialTheme.typography.headlineSmall, color = NothingText)
-            Spacer(Modifier.height(8.dp))
+            EmblemView(filledSections = streak, style = style, size = 180.dp)
+            Spacer(Modifier.height(32.dp))
+            Text("$label • $streak/6 SECTIONS", style = MaterialTheme.typography.labelLarge, color = NothingText)
+            Spacer(Modifier.height(16.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                Text("GYM  $gymStreak/6",  style = MaterialTheme.typography.bodyMedium, color = NothingMuted)
-                Text("FLOW $flowStreak/6", style = MaterialTheme.typography.bodyMedium, color = NothingMuted)
+                Text("GYM $gymStreak/6",  style = MaterialTheme.typography.labelSmall, color = NothingMuted)
+                Text("FLOW $flowStreak/6", style = MaterialTheme.typography.labelSmall, color = NothingMuted)
             }
-            Spacer(Modifier.height(40.dp))
-            Button(onClick = onDone, colors = ButtonDefaults.buttonColors(containerColor = NothingRed)) {
-                Text("Done", style = MaterialTheme.typography.labelLarge)
+            Spacer(Modifier.height(48.dp))
+            Button(
+                onClick = onDone, 
+                shape   = RoundedCornerShape(6.dp),
+                colors  = ButtonDefaults.buttonColors(containerColor = accentColor, contentColor = NothingBg),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("DONE", style = MaterialTheme.typography.labelLarge)
             }
         }
     }
-}
-
-private fun formatTime(seconds: Int): String {
-    val m = seconds / 60
-    val s = seconds % 60
-    return "%02d:%02d".format(m, s)
 }

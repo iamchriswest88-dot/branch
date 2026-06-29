@@ -7,9 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.branch.glyph.EmblemRenderer
-import com.example.branch.theme.NothingEmblB
-import com.example.branch.theme.NothingLeaf
-import com.example.branch.theme.NothingAmber
+import com.example.branch.theme.GymPurple
+import com.example.branch.theme.FlowBlue
 
 enum class EmblemStyle { GYM, FLOW }
 
@@ -37,8 +36,8 @@ fun EmblemView(
 
     GlyphMatrixView(
         grid = grid,
-        activeColor = if (styleStr == "gym") NothingEmblB else NothingLeaf,
-        pulseColor = NothingAmber,
+        activeColor = if (styleStr == "gym") GymPurple else FlowBlue,
+        pulseColor = if (styleStr == "gym") GymPurple else FlowBlue,
         modifier = modifier,
         size = size
     )

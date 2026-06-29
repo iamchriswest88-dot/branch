@@ -3,15 +3,19 @@ package com.example.branch
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,8 +30,6 @@ import com.example.branch.ui.plan.PlanScreen
 import com.example.branch.ui.runner.RunnerScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
-
-import androidx.compose.foundation.layout.fillMaxSize
 
 @Composable
 fun MainNavigation() {
@@ -86,8 +88,19 @@ fun BranchScaffold(
         containerColor = NothingBg,
         bottomBar = {
             NavigationBar(
-                containerColor = NothingSurface,
+                containerColor = NothingBg,
                 tonalElevation = 0.dp,
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .drawWithContent {
+                        drawContent()
+                        drawLine(
+                            color = NothingSurface2,
+                            start = Offset(0f, 0f),
+                            end = Offset(size.width, 0f),
+                            strokeWidth = 1.dp.toPx()
+                        )
+                    }
             ) {
                 TAB_LABELS.forEachIndexed { index, label ->
                     NavigationBarItem(
@@ -109,13 +122,13 @@ fun BranchScaffold(
                                 contentDescription = label
                             )
                         },
-                        label = { Text(label, style = MaterialTheme.typography.labelSmall) },
+                        label = { Text(label.uppercase(), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp)) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor   = NothingRed,
-                            selectedTextColor   = NothingRed,
-                            unselectedIconColor = NothingMuted,
-                            unselectedTextColor = NothingMuted,
-                            indicatorColor      = NothingSurface2
+                            selectedIconColor   = GymPurple,
+                            selectedTextColor   = GymPurple,
+                            unselectedIconColor = NothingFaint,
+                            unselectedTextColor = NothingFaint,
+                            indicatorColor      = androidx.compose.ui.graphics.Color.Transparent
                         )
                     )
                 }
