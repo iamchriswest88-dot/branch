@@ -192,6 +192,13 @@ document.addEventListener('click', (e) => {
     if (e.target.closest('[data-action="new-flow-workout"]')) window.location.href = 'flow_builder.html';
 
     // Library Actions
+    if (e.target.closest('[data-action="toggle-lib-gym"]')) {
+        if (window.libraryComponent) window.libraryComponent.toggleAcc('gym');
+    }
+    if (e.target.closest('[data-action="toggle-lib-flow"]')) {
+        if (window.libraryComponent) window.libraryComponent.toggleAcc('flow');
+    }
+    
     if (e.target.closest('[data-action="add-exercise-prompt"]')) {
         const name = prompt("Enter Exercise Name:");
         if (!name) return;
