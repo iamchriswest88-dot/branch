@@ -229,3 +229,6 @@ function renderWorkouts() {
 
 // Initial Data Load
 fetchData();
+
+// Auto-refresh every 60 seconds (60000 ms)
+setInterval(fetchData, 60000);

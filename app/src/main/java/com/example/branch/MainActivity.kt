@@ -10,11 +10,32 @@ import androidx.compose.ui.Modifier
 import com.example.branch.theme.BranchTheme
 
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Lifecycle
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    lifecycleScope.launch {
+      repeatOnLifecycle(Lifecycle.State.RESUMED) {
+        while (isActive) {
+          withContext(Dispatchers.IO) {
+            try {
+              val app = application as BranchApplication
+              app.syncManager.syncToCloud()
+              app.syncManager.syncFromCloud()
+            } catch (e: Exception) { e.printStackTrace() }
+          }
+          delay(60_000)
+        }
+      }
+    }
 
     setContent {
       BranchTheme {
@@ -22,17 +43,6 @@ class MainActivity : ComponentActivity() {
           MainNavigation()
         }
       }
-    }
-  }
-
-  override fun onResume() {
-    super.onResume()
-    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-      try {
-        val app = application as BranchApplication
-        app.syncManager.syncToCloud()
-        app.syncManager.syncFromCloud()
-      } catch (e: Exception) { e.printStackTrace() }
     }
   }
 
