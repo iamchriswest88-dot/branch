@@ -428,6 +428,13 @@ document.addEventListener('click', (e) => {
         }
     }
 
+    if (e.target.closest('[data-action="filter-equipment"]')) {
+        const btn = e.target.closest('[data-action="filter-equipment"]');
+        const eq = btn.dataset.eq;
+        if (window.libraryComponent) window.libraryComponent.setEquipmentFilter(eq);
+        if (window.builderComponent) window.builderComponent.setEquipmentFilter(eq);
+    }
+
     if (e.target.closest('[data-action="prev-week"]')) {
         if (window.fetchPlanData) window.fetchPlanData(-1);
     }
