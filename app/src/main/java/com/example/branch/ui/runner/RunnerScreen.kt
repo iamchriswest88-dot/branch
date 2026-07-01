@@ -70,7 +70,7 @@ fun ActiveRunnerScreen(
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = NothingBg) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().systemBarsPadding().padding(16.dp),
         ) {
             val phaseColor = when (state.phaseLabel) {
                 "WORK" -> PhaseWork
