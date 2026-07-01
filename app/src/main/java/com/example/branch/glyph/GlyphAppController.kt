@@ -81,6 +81,9 @@ object GlyphAppController {
         if (!glyphConnected || iGlyphService == null) return
         
         try {
+            val regMethod = iGlyphService?.javaClass?.getMethod("registerMatrixSDK", String::class.java)
+            regMethod?.invoke(iGlyphService, "A069P")
+
             val grid = CountdownRenderer.render(secondsRemaining)
             setAppMatrixColorsMethod?.invoke(iGlyphService, grid)
         } catch (t: Throwable) {
@@ -115,6 +118,9 @@ object GlyphAppController {
     private fun pushEmblem(category: String, filledSections: Int) {
         if (!glyphConnected || iGlyphService == null) return
         try {
+            val regMethod = iGlyphService?.javaClass?.getMethod("registerMatrixSDK", String::class.java)
+            regMethod?.invoke(iGlyphService, "A069P")
+            
             val grid = EmblemRenderer.render(category, filledSections)
             setAppMatrixColorsMethod?.invoke(iGlyphService, grid)
         } catch (t: Throwable) {
@@ -128,8 +134,8 @@ object GlyphAppController {
             glyphManager?.turnOff()
         } catch (t: Throwable) {}
         try {
-            val emptyGrid = IntArray(169) { 0 }
-            setAppMatrixColorsMethod?.invoke(iGlyphService, emptyGrid)
+            val closeMethod = iGlyphService?.javaClass?.getMethod("closeAppMatrix")
+            closeMethod?.invoke(iGlyphService)
         } catch (t: Throwable) {}
     }
 }
