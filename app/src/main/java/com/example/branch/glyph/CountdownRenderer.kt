@@ -42,8 +42,8 @@ object CountdownRenderer {
             // Single digit — centre at col 5, row 4
             drawDigit(grid, s, startCol = 5, startRow = 4)
         } else {
-            // Two digits — cols 2 and 7, row 4
-            drawDigit(grid, s / 10, startCol = 2, startRow = 4)
+            // Two digits — cols 3 and 7, row 4
+            drawDigit(grid, s / 10, startCol = 3, startRow = 4)
             drawDigit(grid, s % 10, startCol = 7, startRow = 4)
         }
 

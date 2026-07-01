@@ -2,138 +2,116 @@ package com.example.branch.glyph
 
 import android.content.Context
 import android.util.Log
-import com.nothing.ketchum.Common
+import com.example.branch.glyph.CountdownRenderer
+import com.example.branch.glyph.EmblemRenderer
 import com.nothing.ketchum.Glyph
-import com.nothing.ketchum.GlyphFrame
 import com.nothing.ketchum.GlyphManager
-import com.nothing.ketchum.GlyphMatrixFrame
-import com.nothing.ketchum.GlyphMatrixManager
-import com.nothing.ketchum.GlyphMatrixObject
+import android.content.ComponentName
+import java.lang.reflect.Method
 
 object GlyphAppController {
 
     private const val TAG = "GlyphAppController"
-    
-    private var matrixManager: GlyphMatrixManager? = null
+
     private var glyphManager: GlyphManager? = null
-    
-    private var matrixConnected = false
     private var glyphConnected = false
     
-    private var currentGymStreak = 0
-    private var currentFlowStreak = 0
-    private var activeCategory = "gym"
+    // Direct Service Reflection
+    private var iGlyphService: Any? = null
+    private var setAppMatrixColorsMethod: Method? = null
+    private var setFrameColorsMethod: Method? = null
 
-    fun init(context: Context) {
-        val appCtx = context.applicationContext
-        
-        // Initialize Standard Glyph Manager (Strips)
+    fun init(appCtx: Context) {
         try {
             glyphManager = GlyphManager.getInstance(appCtx)
             glyphManager?.init(object : GlyphManager.Callback {
-                override fun onServiceConnected(componentName: android.content.ComponentName?) {
+                override fun onServiceConnected(componentName: ComponentName?) {
                     glyphConnected = true
-                    val gm = glyphManager ?: return
+                    val mgr = glyphManager ?: return
                     try {
-                        gm.register()
-                        gm.openSession()
+                        mgr.openSession()
                         Log.d(TAG, "GlyphManager connected and session opened")
-                    } catch (e: Exception) {
-                        Log.e(TAG, "GlyphManager register/openSession failed: ${e.message}")
+                        
+                        val serviceField = mgr.javaClass.getDeclaredField("mService")
+                        serviceField.isAccessible = true
+                        val service = serviceField.get(mgr)
+                        if (service != null) {
+                            iGlyphService = service
+                            Log.d(TAG, "Extracted IGlyphService")
+                            
+                            try {
+                                val regMethod = service.javaClass.getMethod("registerMatrixSDK", String::class.java)
+                                val regResult = regMethod.invoke(service, Glyph.DEVICE_25111p) as? Boolean ?: false
+                                Log.d(TAG, "Matrix SDK registered via reflection: $regResult")
+                            } catch (e: Throwable) {
+                                Log.w(TAG, "Matrix register method not found/failed")
+                            }
+                            
+                            try {
+                                setAppMatrixColorsMethod = service.javaClass.getMethod("setAppMatrixColors", IntArray::class.java)
+                                setFrameColorsMethod = service.javaClass.getMethod("setFrameColors", IntArray::class.java)
+                            } catch (e: Throwable) {
+                                Log.w(TAG, "Methods not found: ${e.message}")
+                            }
+                        }
                     } catch (t: Throwable) {
-                        Log.e(TAG, "GlyphManager fatal error: ${t.message}")
+                        Log.e(TAG, "GlyphManager register failed: ${t.message}")
                     }
                 }
-                override fun onServiceDisconnected(componentName: android.content.ComponentName?) {
-                    try { glyphManager?.closeSession() } catch (e: Exception) {}
-                    glyphConnected = false
-                }
-            })
-        } catch (e: Exception) {
-            Log.w(TAG, "GlyphManager init failed: ${e.message}")
-        }
 
-        // Initialize Matrix Manager (Grid)
-        try {
-            matrixManager = GlyphMatrixManager.getInstance()
-            matrixManager?.init(appCtx, object : GlyphMatrixManager.Callback {
-                override fun onServiceConnected(mgr: GlyphMatrixManager) {
-                    matrixConnected = true
-                    try {
-                        mgr.register(Glyph.DEVICE_25111p)
-                        Log.d(TAG, "GlyphMatrixManager connected")
-                    } catch (e: Exception) {
-                        Log.e(TAG, "GlyphMatrixManager register failed: ${e.message}")
-                    }
-                }
-                override fun onServiceDisconnected() {
-                    matrixConnected = false
+                override fun onServiceDisconnected(componentName: ComponentName?) {
+                    glyphConnected = false
+                    iGlyphService = null
+                    setAppMatrixColorsMethod = null
+                    setFrameColorsMethod = null
+                    Log.d(TAG, "GlyphManager disconnected")
                 }
             })
-        } catch (e: Exception) {
-            Log.w(TAG, "GlyphMatrixManager init failed: ${e.message}")
+        } catch (t: Throwable) {
+            Log.e(TAG, "GlyphManager init failed: ${t.message}")
+        }
+    }
+
+    fun showCountdown(secondsRemaining: Int, totalSeconds: Int) {
+        if (!glyphConnected || iGlyphService == null) return
+        
+        try {
+            val grid = CountdownRenderer.render(secondsRemaining)
+            setAppMatrixColorsMethod?.invoke(iGlyphService, grid)
+        } catch (t: Throwable) {
+            Log.w(TAG, "Matrix push failed: ${t.message}")
+        }
+        
+        try {
+            if (secondsRemaining <= 0) {
+                glyphManager?.turnOff()
+            } else {
+                val progressPercent = if (totalSeconds > 0) ((secondsRemaining.toFloat() / totalSeconds.toFloat()) * 100).toInt() else 0
+                val arraySize = 33
+                val frameColors = IntArray(arraySize) { 0 }
+                
+                val ledsToLight = (arraySize * progressPercent) / 100
+                for (i in 0 until ledsToLight) {
+                    frameColors[i] = 4095
+                }
+                
+                setFrameColorsMethod?.invoke(iGlyphService, frameColors)
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Strip push failed: ${t.message}")
         }
     }
 
     fun showEmblem(category: String, gymStreak: Int, flowStreak: Int) {
-        currentGymStreak = gymStreak
-        currentFlowStreak = flowStreak
-        activeCategory = category
-        pushEmblem(category, if (category == "gym") gymStreak else flowStreak)
-    }
-
-    fun showCountdown(secondsRemaining: Int, totalSeconds: Int) {
-        val progressPercent = if (totalSeconds > 0) ((secondsRemaining.toFloat() / totalSeconds.toFloat()) * 100).toInt() else 0
-
-        // Update Matrix Grid
-        if (matrixConnected) {
-            try {
-                val grid = CountdownRenderer.render(secondsRemaining)
-                val obj = GlyphMatrixObject(grid)
-                val frame = GlyphMatrixFrame.Builder().addTop(obj).build()
-                matrixManager?.setAppMatrixFrame(frame.render())
-            } catch (t: Throwable) {
-                Log.w(TAG, "GlyphMatrix countdown push failed: ${t.message}")
-            }
-        }
-
-        // Update Standard Glyph Progress Strip
-        if (glyphConnected) {
-            try {
-                val gm = glyphManager ?: return
-                if (secondsRemaining <= 0) {
-                    gm.turnOff()
-                } else {
-                    gm.displayProgress(null, progressPercent)
-                }
-            } catch (t: Throwable) {
-                Log.w(TAG, "Glyph progress push failed: ${t.message}")
-            }
-        }
-    }
-
-    fun restoreEmblem() {
-        val streak = if (activeCategory == "gym") currentGymStreak else currentFlowStreak
-        pushEmblem(activeCategory, streak)
-    }
-
-    fun release() {
-        try { glyphManager?.closeSession() } catch (e: Exception) {}
-        try { glyphManager?.unInit() } catch (e: Exception) {}
-        try { matrixManager?.unInit() } catch (e: Exception) {}
-        glyphManager = null
-        matrixManager = null
-        glyphConnected = false
-        matrixConnected = false
+        val filledSections = if (category == "gym") gymStreak else flowStreak
+        pushEmblem(category, filledSections)
     }
 
     private fun pushEmblem(category: String, filledSections: Int) {
-        if (!matrixConnected) return
+        if (!glyphConnected || iGlyphService == null) return
         try {
             val grid = EmblemRenderer.render(category, filledSections)
-            val obj = GlyphMatrixObject(grid)
-            val frame = GlyphMatrixFrame.Builder().addTop(obj).build()
-            matrixManager?.setAppMatrixFrame(frame.render())
+            setAppMatrixColorsMethod?.invoke(iGlyphService, grid)
         } catch (t: Throwable) {
             Log.w(TAG, "GlyphMatrix emblem push failed: ${t.message}")
         }
