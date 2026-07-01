@@ -1,9 +1,11 @@
 package com.example.branch.ui.plan
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -117,9 +119,9 @@ fun PlanScreen(vm: PlanViewModel = viewModel(factory = PlanViewModel.factory()))
                             Box(
                                 modifier = Modifier
                                     .size(4.dp)
-                                    .androidx.compose.foundation.background(
+                                    .background(
                                         color = if (day.hasGym) GymPurple else FlowBlue, 
-                                        shape = androidx.compose.foundation.shape.CircleShape
+                                        shape = CircleShape
                                     )
                             )
                         } else {
