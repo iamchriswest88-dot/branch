@@ -109,7 +109,7 @@ fun ActiveRunnerScreen(
                 // Exercise name + side
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        state.exerciseName.uppercase(),
+                        state.exerciseName,
                         style     = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp),
                         color     = NothingText,
                         textAlign = TextAlign.Center
@@ -198,7 +198,7 @@ fun CompletionScreen(
             verticalArrangement   = Arrangement.Center,
             horizontalAlignment   = Alignment.CenterHorizontally
         ) {
-            Text("SESSION COMPLETE", style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), color = accentColor, textAlign = TextAlign.Center)
+            Text("Session Complete", style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), color = accentColor, textAlign = TextAlign.Center)
             Spacer(Modifier.height(32.dp))
             EmblemView(filledSections = streak, style = style, size = 180.dp)
             Spacer(Modifier.height(32.dp))
