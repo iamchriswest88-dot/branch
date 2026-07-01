@@ -46,6 +46,13 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  override fun onResume() {
+    super.onResume()
+    val intent = android.content.Intent(this, com.example.branch.reminder.ReminderService::class.java)
+    intent.action = "STOP_REMINDER"
+    startService(intent)
+  }
+
   override fun onPause() {
     super.onPause()
     com.example.branch.widget.BranchWidgetProvider.triggerUpdate(this)
