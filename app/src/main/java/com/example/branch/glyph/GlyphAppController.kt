@@ -22,10 +22,15 @@ object GlyphAppController {
     private var setFrameColorsMethod: Method? = null
 
     fun init(appCtx: Context) {
+        Log.d(TAG, "GlyphAppController init called!")
         try {
+            Log.d(TAG, "Getting GlyphManager instance...")
             glyphManager = GlyphManager.getInstance(appCtx)
+            Log.d(TAG, "GlyphManager instance: \$glyphManager")
+            Log.d(TAG, "Calling init on glyphManager...")
             glyphManager?.init(object : GlyphManager.Callback {
                 override fun onServiceConnected(componentName: ComponentName?) {
+                    Log.d(TAG, "onServiceConnected called with componentName: \$componentName")
                     glyphConnected = true
                     val mgr = glyphManager ?: return
                     try {
@@ -41,17 +46,17 @@ object GlyphAppController {
                             
                             try {
                                 val regMethod = service.javaClass.getMethod("registerMatrixSDK", String::class.java)
-                                val regResult = regMethod.invoke(service, Glyph.DEVICE_25111p) as? Boolean ?: false
+                                val regResult = regMethod.invoke(service, "A069P") as? Boolean ?: false
                                 Log.d(TAG, "Matrix SDK registered via reflection: $regResult")
                             } catch (e: Throwable) {
-                                Log.w(TAG, "Matrix register method not found/failed")
+                                Log.w(TAG, "Matrix register method not found/failed: ${Log.getStackTraceString(e)}")
                             }
                             
                             try {
                                 setAppMatrixColorsMethod = service.javaClass.getMethod("setAppMatrixColors", IntArray::class.java)
                                 setFrameColorsMethod = service.javaClass.getMethod("setFrameColors", IntArray::class.java)
                             } catch (e: Throwable) {
-                                Log.w(TAG, "Methods not found: ${e.message}")
+                                Log.w(TAG, "Methods not found: ${Log.getStackTraceString(e)}")
                             }
                         }
                     } catch (t: Throwable) {
