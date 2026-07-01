@@ -28,7 +28,7 @@
             android:text="GYM"
             android:textColor="#FFFFFF"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/inter_light" />
     </LinearLayout>
 
     <LinearLayout
@@ -51,7 +51,7 @@
             android:text="FLOW"
             android:textColor="#FFFFFF"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/inter_light" />
     </LinearLayout>
 
 </LinearLayout>
