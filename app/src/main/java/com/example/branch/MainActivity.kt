@@ -52,5 +52,10 @@ class MainActivity : ComponentActivity() {
     com.example.branch.widget.GymWidgetProvider.triggerUpdate(this)
     com.example.branch.widget.FlowWidgetProvider.triggerUpdate(this)
   }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    com.example.branch.glyph.GlyphAppController.turnOff()
+  }
 }
 

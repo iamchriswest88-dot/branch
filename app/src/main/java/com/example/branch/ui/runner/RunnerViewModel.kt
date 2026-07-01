@@ -204,6 +204,9 @@ class RunnerViewModel(
         super.onCleared()
         timer?.cancel()
         audio.release()
+        if (!_state.value.isFinished) {
+            GlyphAppController.turnOff()
+        }
     }
 
     companion object {

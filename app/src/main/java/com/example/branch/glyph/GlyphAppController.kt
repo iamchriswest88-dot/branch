@@ -121,4 +121,15 @@ object GlyphAppController {
             Log.w(TAG, "GlyphMatrix emblem push failed: ${t.message}")
         }
     }
+
+    fun turnOff() {
+        if (!glyphConnected || iGlyphService == null) return
+        try {
+            glyphManager?.turnOff()
+        } catch (t: Throwable) {}
+        try {
+            val emptyGrid = IntArray(169) { 0 }
+            setAppMatrixColorsMethod?.invoke(iGlyphService, emptyGrid)
+        } catch (t: Throwable) {}
+    }
 }
