@@ -193,7 +193,7 @@ fun WorkoutCard(
         ) {
             Text(
                 text     = name,
-                style    = MaterialTheme.typography.labelMedium,
+                style    = MaterialTheme.typography.labelSmall,
                 color    = NothingText,
                 modifier = Modifier.weight(1f)
             )
