@@ -35,19 +35,13 @@ object GlyphAppController {
                     glyphConnected = true
                     val gm = glyphManager ?: return
                     try {
-                        when {
-                            Common.is20111() -> gm.register("20111")
-                            Common.is22111() -> gm.register("22111")
-                            Common.is23111() -> gm.register("23111")
-                            Common.is23113() -> gm.register("23113")
-                            Common.is24111() -> gm.register("24111")
-                            Common.is25111() -> gm.register("25111")
-                            else -> gm.register("25111")
-                        }
+                        gm.register()
                         gm.openSession()
                         Log.d(TAG, "GlyphManager connected and session opened")
                     } catch (e: Exception) {
                         Log.e(TAG, "GlyphManager register/openSession failed: ${e.message}")
+                    } catch (t: Throwable) {
+                        Log.e(TAG, "GlyphManager fatal error: ${t.message}")
                     }
                 }
                 override fun onServiceDisconnected(componentName: android.content.ComponentName?) {
