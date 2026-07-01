@@ -111,14 +111,14 @@ val BranchTypography = Typography(
     ),
     labelMedium = TextStyle(
         fontFamily    = labelFontFamily,
-        fontWeight    = FontWeight.ExtraLight,
+        fontWeight    = FontWeight.Light,
         fontSize      = 16.sp,
         lineHeight    = 20.sp,
         letterSpacing = 1.sp,
     ),
     labelSmall = TextStyle(
         fontFamily    = labelFontFamily,
-        fontWeight    = FontWeight.Light,
+        fontWeight    = FontWeight.ExtraLight,
         fontSize      = 15.sp,
         lineHeight    = 20.sp,
         letterSpacing = 1.sp,
