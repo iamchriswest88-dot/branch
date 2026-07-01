@@ -61,14 +61,9 @@ fun GymScreen(
         ) {
             item {
                 Text(
-                    text = "Branch", 
+                    text = "Gym - Strength", 
                     style = MaterialTheme.typography.displayMedium, 
                     color = NothingText
-                )
-                Text(
-                    text = "Gym",    
-                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 4.sp),   
-                    color = NothingMuted
                 )
             }
             item {
@@ -118,7 +113,7 @@ fun GymScreen(
                 item {
                     Text(
                         text  = "No workouts yet.",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelSmall,
                         color = NothingFaint
                     )
                 }

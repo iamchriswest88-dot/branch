@@ -30,6 +30,7 @@ import com.example.branch.ui.plan.PlanScreen
 import com.example.branch.ui.runner.RunnerScreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Eco
 
 @Composable
 fun MainNavigation() {
@@ -112,7 +113,9 @@ fun BranchScaffold(
                             }
                         },
                         icon = {
-                            val iconVector = if (index == 2) {
+                            val iconVector = if (index == 1) {
+                                Icons.Default.Eco
+                            } else if (index == 2) {
                                 Icons.Default.Dashboard
                             } else {
                                 ImageVector.vectorResource(TAB_ICONS[index])

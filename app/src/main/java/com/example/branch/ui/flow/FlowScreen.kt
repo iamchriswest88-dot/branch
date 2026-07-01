@@ -56,14 +56,9 @@ fun FlowScreen(
         ) {
             item {
                 Text(
-                    text = "Branch", 
+                    text = "Flow", 
                     style = MaterialTheme.typography.displayMedium, 
                     color = NothingText
-                )
-                Text(
-                    text = "Flow",    
-                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 4.sp),   
-                    color = NothingMuted
                 )
             }
             item {
