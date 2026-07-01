@@ -115,7 +115,7 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("GYM", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                    Text("Gym", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
                     Icon(if (gymExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, "Toggle Gym", tint = NothingMuted)
                 }
                 HorizontalDivider(color = NothingLine)
@@ -135,7 +135,7 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
                     AddExerciseRow(
                         areas = vm.allAreas, 
                         accentColor = GymPurple,
-                        onAdd = { name, area -> vm.addCustomExercise(name, area, "gym") }
+                        onAdd = { name, area -> vm.addCustomExercise(name, area, "Gym") }
                     )
                 }
             }
@@ -147,7 +147,7 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("FLOW", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                    Text("Flow", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
                     Icon(if (flowExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, "Toggle Flow", tint = NothingMuted)
                 }
                 HorizontalDivider(color = NothingLine)
@@ -167,7 +167,7 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
                     AddExerciseRow(
                         areas = vm.allAreas, 
                         accentColor = FlowBlue,
-                        onAdd = { name, area -> vm.addCustomExercise(name, area, "flow") }
+                        onAdd = { name, area -> vm.addCustomExercise(name, area, "Flow") }
                     )
                 }
             }
@@ -207,7 +207,7 @@ fun ExerciseRow(exercise: Exercise, allAreas: List<String>, accentColor: Color, 
                     modifier = Modifier.padding(horizontal = 4.dp).border(1.dp, accentColor, RoundedCornerShape(4.dp))
                 ) {
                     Text(
-                        text     = "CUSTOM",
+                        text     = "Custom",
                         style    = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
                         color    = accentColor,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -241,7 +241,7 @@ fun AddExerciseRow(areas: List<String>, accentColor: Color, onAdd: (String, Stri
             OutlinedTextField(
                 value         = name,
                 onValueChange = { name = it },
-                label         = { Text("NAME", style = MaterialTheme.typography.labelSmall) },
+                label         = { Text("Name", style = MaterialTheme.typography.labelSmall) },
                 textStyle     = MaterialTheme.typography.labelSmall,
                 singleLine    = true,
                 shape         = RoundedCornerShape(4.dp),
@@ -265,7 +265,7 @@ fun AddExerciseRow(areas: List<String>, accentColor: Color, onAdd: (String, Stri
                     value         = area,
                     onValueChange = {},
                     readOnly      = true,
-                    label         = { Text("AREA", style = MaterialTheme.typography.labelSmall) },
+                    label         = { Text("Area", style = MaterialTheme.typography.labelSmall) },
                     textStyle     = MaterialTheme.typography.labelSmall,
                     trailingIcon  = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
                     shape         = RoundedCornerShape(4.dp),
@@ -319,7 +319,7 @@ fun EditExerciseRow(initialName: String, initialArea: String, areas: List<String
             OutlinedTextField(
                 value         = name,
                 onValueChange = { name = it },
-                label         = { Text("NAME", style = MaterialTheme.typography.labelSmall) },
+                label         = { Text("Name", style = MaterialTheme.typography.labelSmall) },
                 textStyle     = MaterialTheme.typography.labelSmall,
                 singleLine    = true,
                 shape         = RoundedCornerShape(4.dp),
@@ -343,7 +343,7 @@ fun EditExerciseRow(initialName: String, initialArea: String, areas: List<String
                     value         = area,
                     onValueChange = {},
                     readOnly      = true,
-                    label         = { Text("AREA", style = MaterialTheme.typography.labelSmall) },
+                    label         = { Text("Area", style = MaterialTheme.typography.labelSmall) },
                     textStyle     = MaterialTheme.typography.labelSmall,
                     trailingIcon  = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
                     shape         = RoundedCornerShape(4.dp),

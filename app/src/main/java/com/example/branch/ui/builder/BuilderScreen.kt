@@ -151,7 +151,7 @@ fun StepCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = { showPicker = true }, modifier = Modifier.weight(1f)) {
                     Text(
-                        text = step.exercise?.name ?: "TAP TO SELECT EXERCISE",
+                        text = step.exercise?.name ?: "Tap to select exercise",
                         style = MaterialTheme.typography.labelMedium,
                         color = if (step.exercise != null) NothingText else NothingFaint
                     )

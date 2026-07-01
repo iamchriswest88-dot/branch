@@ -45,7 +45,7 @@ class GymWidgetProvider : AppWidgetProvider() {
                 appWidgetIds.forEach { widgetId ->
                     val views = RemoteViews(context.packageName, R.layout.single_glyph_widget)
                     views.setImageViewBitmap(R.id.glyph_image, gymBitmap)
-                    views.setTextViewText(R.id.glyph_label, "GYM")
+                    views.setTextViewText(R.id.glyph_label, "Gym")
                     
                     val intent = Intent(context, MainActivity::class.java)
                     val pendingIntent = PendingIntent.getActivity(

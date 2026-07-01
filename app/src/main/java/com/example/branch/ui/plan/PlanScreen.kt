@@ -186,7 +186,7 @@ fun PlanDayDetails(
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text     = day.dayLabel + if (day.isToday && day.dayLabel != "TODAY") " · TODAY" else "",
+                    text     = day.dayLabel + if (day.isToday && day.dayLabel != "Today") " · TODAY" else "",
                     style    = MaterialTheme.typography.labelMedium,
                     color    = if (day.isToday) GymPurple else NothingText,
                     modifier = Modifier.weight(1f)

@@ -73,9 +73,9 @@ class PlanViewModel(
             PlanDayUiState(
                 dateKey  = dateKey,
                 dayLabel = when {
-                    isYesterday -> "YESTERDAY"
-                    isToday     -> "TODAY"
-                    isTomorrow  -> "TOMORROW"
+                    isYesterday -> "Yesterday"
+                    isToday     -> "Today"
+                    isTomorrow  -> "Tomorrow"
                     else        -> date.dayOfWeek.name.take(3) + " " + date.dayOfMonth
                 },
                 shortDayName = date.dayOfWeek.name.take(3),

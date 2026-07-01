@@ -15,7 +15,7 @@ val spaceGroteskFamily = FontFamily(Font(R.font.space_grotesk_regular))
 val letteraMonoFamily = FontFamily(Font(R.font.lettera_mono_ll_regular))
 val interLightFamily = FontFamily(Font(R.font.inter_light))
 
-val displayFontFamily: FontFamily = ntype82Family
+val displayFontFamily: FontFamily = interLightFamily
 val bodyFontFamily: FontFamily    = interLightFamily
 val labelFontFamily: FontFamily   = interLightFamily
 

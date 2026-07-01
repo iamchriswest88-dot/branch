@@ -188,7 +188,7 @@ fun CompletionScreen(
 ) {
     val style       = if (category == "gym") EmblemStyle.GYM else EmblemStyle.FLOW
     val streak      = if (category == "gym") gymStreak else flowStreak
-    val label       = if (category == "gym") "GYM" else "FLOW"
+    val label       = if (category == "gym") "Gym" else "Flow"
     val accentColor = if (category == "gym") GymPurple else FlowBlue
 
     Scaffold(
@@ -204,11 +204,11 @@ fun CompletionScreen(
             Spacer(Modifier.height(32.dp))
             EmblemView(filledSections = streak, style = style, size = 180.dp)
             Spacer(Modifier.height(32.dp))
-            Text("$label • $streak/6 SECTIONS", style = MaterialTheme.typography.labelLarge, color = NothingText)
+            Text("$label • $streak/6 Sections", style = MaterialTheme.typography.labelLarge, color = NothingText)
             Spacer(Modifier.height(16.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                Text("GYM $gymStreak/6",  style = MaterialTheme.typography.labelSmall, color = NothingMuted)
-                Text("FLOW $flowStreak/6", style = MaterialTheme.typography.labelSmall, color = NothingMuted)
+                Text("Gym $gymStreak/6",  style = MaterialTheme.typography.labelSmall, color = NothingMuted)
+                Text("Flow $flowStreak/6", style = MaterialTheme.typography.labelSmall, color = NothingMuted)
             }
             Spacer(Modifier.height(48.dp))
             Button(
@@ -217,7 +217,7 @@ fun CompletionScreen(
                 colors  = ButtonDefaults.buttonColors(containerColor = accentColor, contentColor = NothingBg),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("DONE", style = MaterialTheme.typography.labelLarge)
+                Text("Done", style = MaterialTheme.typography.labelLarge)
             }
         }
     }

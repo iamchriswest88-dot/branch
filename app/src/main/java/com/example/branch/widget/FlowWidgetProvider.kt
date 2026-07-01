@@ -45,7 +45,7 @@ class FlowWidgetProvider : AppWidgetProvider() {
                 appWidgetIds.forEach { widgetId ->
                     val views = RemoteViews(context.packageName, R.layout.single_glyph_widget)
                     views.setImageViewBitmap(R.id.glyph_image, flowBitmap)
-                    views.setTextViewText(R.id.glyph_label, "FLOW")
+                    views.setTextViewText(R.id.glyph_label, "Flow")
                     
                     val intent = Intent(context, MainActivity::class.java)
                     val pendingIntent = PendingIntent.getActivity(
