@@ -92,8 +92,8 @@ object GlyphAppController {
                 val obj = GlyphMatrixObject(grid)
                 val frame = GlyphMatrixFrame.Builder().addTop(obj).build()
                 matrixManager?.setAppMatrixFrame(frame.render())
-            } catch (e: Exception) {
-                Log.w(TAG, "GlyphMatrix countdown push failed: ${e.message}")
+            } catch (t: Throwable) {
+                Log.w(TAG, "GlyphMatrix countdown push failed: ${t.message}")
             }
         }
 
@@ -111,8 +111,8 @@ object GlyphAppController {
                         gm.displayProgress(frame, progressPercent)
                     }
                 }
-            } catch (e: Exception) {
-                Log.w(TAG, "Glyph progress push failed: ${e.message}")
+            } catch (t: Throwable) {
+                Log.w(TAG, "Glyph progress push failed: ${t.message}")
             }
         }
     }
@@ -139,8 +139,8 @@ object GlyphAppController {
             val obj = GlyphMatrixObject(grid)
             val frame = GlyphMatrixFrame.Builder().addTop(obj).build()
             matrixManager?.setAppMatrixFrame(frame.render())
-        } catch (e: Exception) {
-            Log.w(TAG, "GlyphMatrix emblem push failed: ${e.message}")
+        } catch (t: Throwable) {
+            Log.w(TAG, "GlyphMatrix emblem push failed: ${t.message}")
         }
     }
 }
