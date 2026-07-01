@@ -83,8 +83,8 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    // Glyph Matrix SDK — uncomment after placing GlyphMatrixSDK.aar in app/libs/
-    // implementation(files("libs/GlyphMatrixSDK.aar"))
+    // Glyph Matrix SDK
+    implementation(files("libs/glyph-matrix-sdk-2.0.aar"))
 
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)

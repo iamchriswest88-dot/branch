@@ -18,6 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Branch">
 
+        <meta-data android:name="NothingKey" android:value="test"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -9,6 +9,8 @@ import com.example.branch.worker.DailyStreakWorker
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.launch
 
+import com.example.branch.glyph.GlyphAppController
+
 class BranchApplication : Application() {
 
     val database by lazy { BranchDatabase.getDatabase(this) }
@@ -16,6 +18,7 @@ class BranchApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        GlyphAppController.init(this)
         scheduleDailyStreakWork()
     }
 
