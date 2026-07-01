@@ -101,15 +101,10 @@ object GlyphAppController {
         if (glyphConnected) {
             try {
                 val gm = glyphManager ?: return
-                val builder = gm.glyphFrameBuilder
-                if (builder != null) {
-                    val frame = builder.build()
-                    // If secondsRemaining == 0, turn off
-                    if (secondsRemaining <= 0) {
-                        gm.turnOff()
-                    } else {
-                        gm.displayProgress(frame, progressPercent)
-                    }
+                if (secondsRemaining <= 0) {
+                    gm.turnOff()
+                } else {
+                    gm.displayProgress(null, progressPercent)
                 }
             } catch (t: Throwable) {
                 Log.w(TAG, "Glyph progress push failed: ${t.message}")
