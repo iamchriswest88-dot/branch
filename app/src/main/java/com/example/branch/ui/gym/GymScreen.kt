@@ -61,7 +61,7 @@ fun GymScreen(
         ) {
             item {
                 Text(
-                    text = "Gym - Strength", 
+                    text = "Lift", 
                     style = MaterialTheme.typography.displayMedium, 
                     color = NothingText
                 )
