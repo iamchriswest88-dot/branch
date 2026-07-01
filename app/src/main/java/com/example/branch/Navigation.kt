@@ -44,7 +44,8 @@ fun MainNavigation() {
             BranchScaffold(
                 onNewWorkout  = { cat -> navController.navigate("builder/$cat") },
                 onEditWorkout = { cat, id -> navController.navigate("builder/$cat?workoutId=$id") },
-                onRunWorkout  = { id -> navController.navigate("runner/$id") }
+                onRunWorkout  = { id -> navController.navigate("runner/$id") },
+                onAskAi       = { cat -> navController.navigate("ai/$cat") }
             )
         }
         composable("builder/{category}?workoutId={workoutId}") { backStackEntry ->
@@ -54,6 +55,17 @@ fun MainNavigation() {
                 category  = category,
                 workoutId = workoutId,
                 onBack    = { navController.popBackStack() }
+            )
+        }
+        composable("ai/{category}") { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: "gym"
+            com.example.branch.ui.ai.AiCompanionScreen(
+                category = category,
+                onBack = { navController.popBackStack() },
+                onWorkoutGenerated = { newWorkoutId ->
+                    navController.popBackStack()
+                    navController.navigate("builder/$category?workoutId=$newWorkoutId")
+                }
             )
         }
         composable("runner/{workoutId}") { backStackEntry ->
@@ -80,6 +92,7 @@ fun BranchScaffold(
     onNewWorkout:  (String) -> Unit,
     onEditWorkout: (String, String) -> Unit,
     onRunWorkout:  (String) -> Unit,
+    onAskAi:       (String) -> Unit
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(0) }
     val haptic = LocalHapticFeedback.current
@@ -147,12 +160,14 @@ fun BranchScaffold(
                 0 -> GymScreen(
                     onNewWorkout  = { onNewWorkout("gym") },
                     onEditWorkout = { id -> onEditWorkout("gym", id) },
-                    onRunWorkout  = onRunWorkout
+                    onRunWorkout  = onRunWorkout,
+                    onAskAi       = { onAskAi("gym") }
                 )
                 1 -> FlowScreen(
                     onNewWorkout  = { onNewWorkout("flow") },
                     onEditWorkout = { id -> onEditWorkout("flow", id) },
-                    onRunWorkout  = onRunWorkout
+                    onRunWorkout  = onRunWorkout,
+                    onAskAi       = { onAskAi("flow") }
                 )
                 2 -> HubScreen()
                 3 -> PlanScreen()

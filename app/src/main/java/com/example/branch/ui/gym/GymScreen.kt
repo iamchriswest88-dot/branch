@@ -32,6 +32,7 @@ fun GymScreen(
     onNewWorkout:  () -> Unit,
     onEditWorkout: (String) -> Unit,
     onRunWorkout:  (String) -> Unit,
+    onAskAi:       () -> Unit,
     vm: GymViewModel = viewModel(factory = GymViewModel.factory())
 ) {
     val workouts      by vm.workouts.collectAsStateWithLifecycle()
@@ -129,23 +130,43 @@ fun GymScreen(
                 }
             }
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onNewWorkout() }
-                        .border(
-                            width = 1.dp, 
-                            color = NothingLine2, 
-                            shape = RoundedCornerShape(6.dp)
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onNewWorkout() }
+                            .border(
+                                width = 1.dp, 
+                                color = NothingLine2, 
+                                shape = RoundedCornerShape(6.dp)
+                            )
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "+ NEW WORKOUT", 
+                            style = MaterialTheme.typography.labelMedium, 
+                            color = GymPurple
                         )
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "+ NEW WORKOUT", 
-                        style = MaterialTheme.typography.labelMedium, 
-                        color = GymPurple
-                    )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onAskAi() }
+                            .border(
+                                width = 1.dp, 
+                                color = NothingLine2, 
+                                shape = RoundedCornerShape(6.dp)
+                            )
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "✦ ASK AI", 
+                            style = MaterialTheme.typography.labelMedium, 
+                            color = GymPurple
+                        )
+                    }
                 }
             }
             item {

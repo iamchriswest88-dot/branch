@@ -27,6 +27,7 @@ fun FlowScreen(
     onNewWorkout:  () -> Unit,
     onEditWorkout: (String) -> Unit,
     onRunWorkout:  (String) -> Unit,
+    onAskAi:       () -> Unit,
     vm: FlowViewModel = viewModel(factory = FlowViewModel.factory())
 ) {
     val workouts      by vm.workouts.collectAsStateWithLifecycle()
@@ -124,23 +125,43 @@ fun FlowScreen(
                 }
             }
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onNewWorkout() }
-                        .border(
-                            width = 1.dp, 
-                            color = NothingLine2, 
-                            shape = RoundedCornerShape(6.dp)
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onNewWorkout() }
+                            .border(
+                                width = 1.dp, 
+                                color = NothingLine2, 
+                                shape = RoundedCornerShape(6.dp)
+                            )
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "+ NEW FLOW", 
+                            style = MaterialTheme.typography.labelMedium, 
+                            color = FlowBlue
                         )
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "+ NEW FLOW", 
-                        style = MaterialTheme.typography.labelMedium, 
-                        color = FlowBlue
-                    )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onAskAi() }
+                            .border(
+                                width = 1.dp, 
+                                color = NothingLine2, 
+                                shape = RoundedCornerShape(6.dp)
+                            )
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "✦ ASK AI", 
+                            style = MaterialTheme.typography.labelMedium, 
+                            color = FlowBlue
+                        )
+                    }
                 }
             }
             item {
