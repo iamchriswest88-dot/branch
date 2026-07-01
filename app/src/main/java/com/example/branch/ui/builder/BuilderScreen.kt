@@ -75,7 +75,7 @@ fun BuilderScreen(
                 OutlinedTextField(
                     value         = vm.workoutName,
                     onValueChange = vm::setName,
-                    label         = { Text(if (vm.isFlow) "FLOW NAME" else "WORKOUT NAME", style = MaterialTheme.typography.labelSmall) },
+                    label         = { Text(if (vm.isFlow) "Flow Name" else "Workout Name", style = MaterialTheme.typography.labelSmall) },
                     singleLine    = true,
                     modifier      = Modifier.fillMaxWidth(),
                     shape         = RoundedCornerShape(6.dp),

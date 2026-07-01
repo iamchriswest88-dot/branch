@@ -66,7 +66,7 @@ fun GymScreen(
                     color = NothingText
                 )
                 Text(
-                    text = "GYM",    
+                    text = "Gym",    
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 4.sp),   
                     color = NothingMuted
                 )
@@ -84,8 +84,8 @@ fun GymScreen(
                         .padding(vertical = 16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    StatChip("$gymStreak/6",   "SECTIONS")
-                    StatChip("$totalSessions", "TOTAL")
+                    StatChip("$gymStreak/6",   "Sections")
+                    StatChip("$totalSessions", "Total")
                 }
             }
             item {
@@ -94,7 +94,7 @@ fun GymScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("SHOW ON GLYPH", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                    Text("Show On Glyph", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
                     Switch(
                         checked = showOnGlyph,
                         onCheckedChange = { vm.toggleGlyph() },
@@ -112,7 +112,7 @@ fun GymScreen(
             }
             item {
                 Spacer(Modifier.height(8.dp))
-                Text("WORKOUTS", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
+                Text("Workouts", style = MaterialTheme.typography.labelMedium, color = NothingMuted)
             }
             if (workouts.isEmpty()) {
                 item {

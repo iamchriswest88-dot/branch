@@ -198,18 +198,17 @@ fun PlanDayDetails(
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                PlanChip("GYM",  day.hasGym,  onToggleGym,  GymPurple)
-                PlanChip("FLOW", day.hasFlow, onToggleFlow, FlowBlue)
-                PlanChip("REST", day.hasRest, onToggleRest, NothingFaint)
+                PlanChip("Gym",  day.hasGym,  onToggleGym,  GymPurple)
+                PlanChip("Flow", day.hasFlow, onToggleFlow, FlowBlue)
+                PlanChip("Rest", day.hasRest, onToggleRest, NothingFaint)
             }
-            if (day.hasGym || day.hasFlow) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (day.hasGym) {
-                        PlanChip("GYM DONE", day.gymDone, onToggleGymDone, GymPurple)
-                    }
-                    if (day.hasFlow) {
-                        PlanChip("FLOW DONE", day.flowDone, onToggleFlowDone, FlowBlue)
-                    }
+            Spacer(Modifier.height(16.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (day.hasGym) {
+                    PlanChip("Gym Done", day.gymDone, onToggleGymDone, GymPurple)
+                }
+                if (day.hasFlow) {
+                    PlanChip("Flow Done", day.flowDone, onToggleFlowDone, FlowBlue)
                 }
             }
         }
