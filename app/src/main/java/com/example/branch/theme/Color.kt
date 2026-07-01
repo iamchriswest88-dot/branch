@@ -3,9 +3,9 @@ package com.example.branch.theme
 import androidx.compose.ui.graphics.Color
 
 // Nothing design language colour tokens
-val NothingBg       = Color(0xFF121212)
-val NothingSurface  = Color(0xFF1C1C1C)
-val NothingSurface2 = Color(0xFF242424)
+val NothingBg       = Color(0xFF141414)
+val NothingSurface  = Color(0xFF262626)
+val NothingSurface2 = Color(0xFF333333)
 val NothingLine     = Color(0xFF262626)
 val NothingLine2    = Color(0xFF333333)
 val NothingText     = Color(0xFFEDEDED)

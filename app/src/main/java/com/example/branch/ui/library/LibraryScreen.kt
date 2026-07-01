@@ -47,22 +47,22 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel(factory = LibraryViewModel.fa
     val filteredFlow = if (selectedArea == "All") flowExercises else flowExercises.filter { it.area == selectedArea }
 
     Scaffold(
-        modifier = Modifier.dotMatrixBackground(),
-        containerColor = Color.Transparent
+        
+        containerColor = NothingBg
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 24.dp)
+            contentPadding = PaddingValues(top = 64.dp, bottom = 24.dp)
         ) {
             item { 
                 Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "Library", 
-                        style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), 
+                        style = MaterialTheme.typography.displayMedium, 
                         color = NothingText
                     ) 
                 }

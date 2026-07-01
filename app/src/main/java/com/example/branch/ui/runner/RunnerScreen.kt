@@ -112,7 +112,7 @@ fun ActiveRunnerScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Text(
                         state.exerciseName,
-                        style     = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp),
+                        style = MaterialTheme.typography.displayMedium,
                         color     = NothingText,
                         textAlign = TextAlign.Center
                     )
@@ -192,15 +192,15 @@ fun CompletionScreen(
     val accentColor = if (category == "gym") GymPurple else FlowBlue
 
     Scaffold(
-        modifier = Modifier.dotMatrixBackground(),
-        containerColor = Color.Transparent
+        
+        containerColor = NothingBg
     ) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(32.dp),
             verticalArrangement   = Arrangement.Center,
             horizontalAlignment   = Alignment.CenterHorizontally
         ) {
-            Text("Session Complete", style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), color = accentColor, textAlign = TextAlign.Center)
+            Text("Session Complete", style = MaterialTheme.typography.displayMedium, color = accentColor, textAlign = TextAlign.Center)
             Spacer(Modifier.height(32.dp))
             EmblemView(filledSections = streak, style = style, size = 180.dp)
             Spacer(Modifier.height(32.dp))

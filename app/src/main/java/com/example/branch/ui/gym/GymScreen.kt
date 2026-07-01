@@ -48,21 +48,21 @@ fun GymScreen(
     val gymPlanned = planDay?.hasGym == true && !gymDone
 
     Scaffold(
-        modifier = Modifier.dotMatrixBackground(),
-        containerColor = Color.Transparent
+        
+        containerColor = NothingBg
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(vertical = 24.dp)
+            contentPadding = PaddingValues(top = 64.dp, bottom = 24.dp)
         ) {
             item {
                 Text(
                     text = "Branch", 
-                    style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), 
+                    style = MaterialTheme.typography.displayMedium, 
                     color = NothingText
                 )
                 Text(

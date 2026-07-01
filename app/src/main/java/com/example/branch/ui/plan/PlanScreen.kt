@@ -28,14 +28,14 @@ fun PlanScreen(vm: PlanViewModel = viewModel(factory = PlanViewModel.factory()))
     val weekLabel by vm.weekLabel.collectAsStateWithLifecycle()
 
     Scaffold(
-        modifier = Modifier.dotMatrixBackground(),
-        containerColor = Color.Transparent
+        
+        containerColor = NothingBg
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(vertical = 24.dp)
         ) {
@@ -47,7 +47,7 @@ fun PlanScreen(vm: PlanViewModel = viewModel(factory = PlanViewModel.factory()))
                 ) {
                     Text(
                         text = "Plan", 
-                        style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), 
+                        style = MaterialTheme.typography.displayMedium, 
                         color = NothingText
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -121,7 +121,7 @@ fun PlanDayCard(
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text     = day.dayLabel.uppercase() + if (day.isToday) " · TODAY" else "",
+                    text     = day.dayLabel.uppercase() + if (day.isToday) " Ã‚Â· TODAY" else "",
                     style    = MaterialTheme.typography.labelMedium,
                     color    = if (day.isToday) GymPurple else NothingText,
                     modifier = Modifier.weight(1f)

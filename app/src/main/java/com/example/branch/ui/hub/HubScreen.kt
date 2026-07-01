@@ -42,17 +42,17 @@ fun HubScreen() {
     }
 
     Scaffold(
-        modifier = Modifier.dotMatrixBackground(),
-        containerColor = Color.Transparent
+        
+        containerColor = NothingBg
     ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp, vertical = 24.dp),
+            modifier = Modifier.fillMaxSize().padding(padding).padding(start = 24.dp, end = 24.dp, top = 64.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
                 Text(
                     text = "Hub", 
-                    style = MaterialTheme.typography.displaySmall.copy(fontSize = 34.sp, letterSpacing = (-1.5).sp), 
+                    style = MaterialTheme.typography.displayMedium, 
                     color = NothingText
                 )
                 Text(

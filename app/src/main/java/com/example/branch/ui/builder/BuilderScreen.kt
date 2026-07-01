@@ -36,8 +36,8 @@ fun BuilderScreen(
     val accentColor = if (vm.isFlow) FlowBlue else GymPurple
 
     Scaffold(
-        modifier = Modifier.dotMatrixBackground(),
-        containerColor = Color.Transparent,
+        
+        containerColor = NothingBg,
         topBar = {
             TopAppBar(
                 navigationIcon = {
@@ -48,7 +48,7 @@ fun BuilderScreen(
                 title = {
                     Text(
                         (if (vm.isFlow) "FLOW" else "GYM") + if (workoutId == null) " BUILDER" else " EDIT",
-                        style = MaterialTheme.typography.displaySmall.copy(fontSize = 24.sp, letterSpacing = (-1.0).sp),
+                        style = MaterialTheme.typography.displayMedium,
                         color = NothingText
                     )
                 },
@@ -62,7 +62,7 @@ fun BuilderScreen(
                         Icon(Icons.Default.Check, "Save", tint = accentColor)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = NothingBg)
             )
         }
     ) { padding ->
