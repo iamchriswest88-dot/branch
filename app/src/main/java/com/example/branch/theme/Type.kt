@@ -12,10 +12,11 @@ import com.example.branch.R
 val ntype82Family = FontFamily(Font(R.font.ntype82_headline))
 val ndot57Family = FontFamily(Font(R.font.ndot57_regular))
 val interLightFamily = FontFamily(Font(R.font.inter_light, weight = FontWeight.ExtraLight))
+val interRegularFamily = FontFamily(Font(R.font.inter_regular, weight = FontWeight.Normal))
 
 val displayFontFamily: FontFamily = ntype82Family
-val bodyFontFamily: FontFamily    = interLightFamily
-val labelFontFamily: FontFamily   = interLightFamily
+val bodyFontFamily: FontFamily    = interRegularFamily
+val labelFontFamily: FontFamily   = interRegularFamily
 
 val BranchTypography = Typography(
     displayLarge = TextStyle(
@@ -117,7 +118,7 @@ val BranchTypography = Typography(
         letterSpacing = 1.sp,
     ),
     labelSmall = TextStyle(
-        fontFamily    = labelFontFamily,
+        fontFamily    = interLightFamily,
         fontWeight    = FontWeight.ExtraLight,
         fontSize      = 15.sp,
         lineHeight    = 20.sp,
