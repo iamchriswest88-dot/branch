@@ -177,6 +177,7 @@ class RunnerViewModel(
     fun skip() { timer?.cancel(); advance() }
 
     private fun finishWorkout() {
+        _state.update { it.copy(isLoading = false) }
         viewModelScope.launch {
             val today    = LocalDate.now().format(fmt)
             val category = workoutData?.workout?.category ?: return@launch
@@ -194,7 +195,7 @@ class RunnerViewModel(
             GlyphAppController.showEmblem(category, gymStreak, flowStreak)
 
             _state.update {
-                it.copy(isFinished = true, gymStreak = gymStreak, flowStreak = flowStreak, category = category)
+                it.copy(isFinished = true, isLoading = false, gymStreak = gymStreak, flowStreak = flowStreak, category = category)
             }
         }
     }
