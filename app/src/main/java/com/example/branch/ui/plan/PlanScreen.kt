@@ -27,82 +27,144 @@ fun PlanScreen(vm: PlanViewModel = viewModel(factory = PlanViewModel.factory()))
     val haptic = LocalHapticFeedback.current
     val weekLabel by vm.weekLabel.collectAsStateWithLifecycle()
 
+    var selectedDateKey by remember { mutableStateOf("") }
+
+    // Update selectedDateKey when days changes, ensuring we have a valid selection.
+    // If the currently selected date is not in the visible week, default to the first day of that week.
+    LaunchedEffect(days) {
+        if (days.isNotEmpty() && days.none { it.dateKey == selectedDateKey }) {
+            selectedDateKey = days.firstOrNull { it.isToday }?.dateKey ?: days.first().dateKey
+        }
+    }
+
+    val selectedDay = days.find { it.dateKey == selectedDateKey }
+
     Scaffold(
-        
         containerColor = NothingBg
     ) { padding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(vertical = 24.dp)
+                .padding(top = 64.dp, bottom = 120.dp),
         ) {
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Plan", 
+                    style = MaterialTheme.typography.displayMedium, 
+                    color = NothingText
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = vm::previousWeek) {
+                        Icon(Icons.Default.ChevronLeft, contentDescription = "Previous Week", tint = NothingMuted)
+                    }
                     Text(
-                        text = "Plan", 
-                        style = MaterialTheme.typography.displayMedium, 
-                        color = NothingText
+                        text = weekLabel.uppercase(), 
+                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 2.sp), 
+                        color = NothingMuted
                     )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = vm::previousWeek) {
-                            Icon(Icons.Default.ChevronLeft, contentDescription = "Previous Week", tint = NothingMuted)
+                    IconButton(onClick = vm::nextWeek) {
+                        Icon(Icons.Default.ChevronRight, contentDescription = "Next Week", tint = NothingMuted)
+                    }
+                }
+            }
+
+            // Horizontal Picker
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 32.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                days.forEach { day ->
+                    val isSelected = day.dateKey == selectedDateKey
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = if (isSelected) NothingText else Color.Transparent,
+                            contentColor = if (isSelected) NothingBg else NothingText,
+                            onClick = { selectedDateKey = day.dateKey },
+                            modifier = Modifier.fillMaxWidth().aspectRatio(0.7f)
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = day.shortDayName.uppercase(),
+                                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                                    color = if (isSelected) NothingBg else NothingMuted
+                                )
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    text = day.dayOfMonth,
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = if (isSelected) NothingBg else NothingText
+                                )
+                            }
                         }
-                        Text(
-                            text = weekLabel.uppercase(), 
-                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 2.sp), 
-                            color = NothingMuted
-                        )
-                        IconButton(onClick = vm::nextWeek) {
-                            Icon(Icons.Default.ChevronRight, contentDescription = "Next Week", tint = NothingMuted)
+                        // Indicator dot underneath if something is scheduled
+                        Spacer(Modifier.height(8.dp))
+                        if (day.hasGym || day.hasFlow) {
+                            Box(
+                                modifier = Modifier
+                                    .size(4.dp)
+                                    .androidx.compose.foundation.background(
+                                        color = if (day.hasGym) GymPurple else FlowBlue, 
+                                        shape = androidx.compose.foundation.shape.CircleShape
+                                    )
+                            )
+                        } else {
+                            Box(modifier = Modifier.size(4.dp)) // Placeholder
                         }
                     }
                 }
             }
-            items(days, key = { it.dateKey }) { day ->
-                PlanDayCard(
-                    day              = day,
+
+            // Selected Day Details
+            if (selectedDay != null) {
+                PlanDayDetails(
+                    day = selectedDay,
                     onToggleGym      = { 
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        vm.toggleGym(day.dateKey, day.hasGym) 
+                        vm.toggleGym(selectedDay.dateKey, selectedDay.hasGym) 
                     },
                     onToggleFlow     = { 
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        vm.toggleFlow(day.dateKey, day.hasFlow) 
+                        vm.toggleFlow(selectedDay.dateKey, selectedDay.hasFlow) 
                     },
                     onToggleRest     = { 
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        vm.toggleRest(day.dateKey, day.hasRest) 
+                        vm.toggleRest(selectedDay.dateKey, selectedDay.hasRest) 
                     },
                     onClear          = { 
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        vm.clearDay(day.dateKey) 
+                        vm.clearDay(selectedDay.dateKey) 
                     },
                     onToggleGymDone  = { 
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        vm.toggleGymDone(day.dateKey, day.gymDone) 
+                        vm.toggleGymDone(selectedDay.dateKey, selectedDay.gymDone) 
                     },
                     onToggleFlowDone = { 
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        vm.toggleFlowDone(day.dateKey, day.flowDone) 
+                        vm.toggleFlowDone(selectedDay.dateKey, selectedDay.flowDone) 
                     }
                 )
-            }
-            item {
-                Spacer(Modifier.height(32.dp))
             }
         }
     }
 }
 
 @Composable
-fun PlanDayCard(
+fun PlanDayDetails(
     day:              PlanDayUiState,
     onToggleGym:      () -> Unit,
     onToggleFlow:     () -> Unit,
@@ -113,20 +175,22 @@ fun PlanDayCard(
 ) {
     Surface(
         color    = Color.Transparent,
-        shape    = RoundedCornerShape(6.dp),
+        shape    = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, NothingLine, RoundedCornerShape(6.dp))
+            .padding(horizontal = 24.dp)
+            .border(1.dp, NothingLine, RoundedCornerShape(12.dp))
     ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text     = day.dayLabel.uppercase() + if (day.isToday) " Ã‚Â· TODAY" else "",
+                    text     = day.dayLabel.uppercase() + if (day.isToday && day.dayLabel != "TODAY") " · TODAY" else "",
                     style    = MaterialTheme.typography.labelMedium,
                     color    = if (day.isToday) GymPurple else NothingText,
                     modifier = Modifier.weight(1f)
                 )
                 Text(day.dateKey, style = MaterialTheme.typography.labelSmall, color = NothingMuted)
+                Spacer(Modifier.width(8.dp))
                 IconButton(onClick = onClear, modifier = Modifier.size(32.dp)) {
                     Icon(Icons.Default.Delete, "Clear", tint = NothingFaint)
                 }
@@ -156,7 +220,7 @@ fun PlanChip(label: String, selected: Boolean, onClick: () -> Unit, selectedColo
         selected = selected,
         onClick  = onClick,
         label    = { Text(label, style = MaterialTheme.typography.labelSmall) },
-        shape    = RoundedCornerShape(6.dp),
+        shape    = RoundedCornerShape(8.dp),
         border   = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = selected,

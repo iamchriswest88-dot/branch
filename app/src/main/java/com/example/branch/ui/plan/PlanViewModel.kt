@@ -16,6 +16,8 @@ import java.time.format.DateTimeFormatter
 data class PlanDayUiState(
     val dateKey:  String,
     val dayLabel: String,
+    val shortDayName: String,
+    val dayOfMonth: String,
     val hasGym:   Boolean,
     val hasFlow:  Boolean,
     val hasRest:  Boolean,
@@ -76,6 +78,8 @@ class PlanViewModel(
                     isTomorrow  -> "TOMORROW"
                     else        -> date.dayOfWeek.name.take(3) + " " + date.dayOfMonth
                 },
+                shortDayName = date.dayOfWeek.name.take(3),
+                dayOfMonth   = date.dayOfMonth.toString(),
                 hasGym   = day.hasGym,
                 hasFlow  = day.hasFlow,
                 hasRest  = day.hasRest,
