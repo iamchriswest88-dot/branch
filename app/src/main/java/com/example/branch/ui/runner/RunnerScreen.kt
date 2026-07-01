@@ -92,7 +92,7 @@ fun ActiveRunnerScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    state.phaseLabel.uppercase(),
+                    state.phaseLabel,
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 2.sp),
                     color = phaseColor
                 )
@@ -118,7 +118,7 @@ fun ActiveRunnerScreen(
                     )
                     if (state.sideLabel.isNotEmpty()) {
                         Spacer(Modifier.height(8.dp))
-                        Text(state.sideLabel.uppercase(), style = MaterialTheme.typography.labelMedium, color = phaseColor)
+                        Text(state.sideLabel, style = MaterialTheme.typography.labelMedium, color = phaseColor)
                     }
                 }
 

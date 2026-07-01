@@ -122,7 +122,7 @@ fun BranchScaffold(
                                 contentDescription = label
                             )
                         },
-                        label = { Text(label.uppercase(), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp)) },
+                        label = { Text(label, style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp)) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor   = GymPurple,
                             selectedTextColor   = GymPurple,

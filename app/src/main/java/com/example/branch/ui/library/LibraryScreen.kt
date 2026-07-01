@@ -196,9 +196,9 @@ fun ExerciseRow(exercise: Exercise, allAreas: List<String>, accentColor: Color, 
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { isEditing = true },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(exercise.name.uppercase(), style = MaterialTheme.typography.labelSmall, color = NothingText, modifier = Modifier.weight(1f))
+            Text(exercise.name, style = MaterialTheme.typography.labelSmall, color = NothingText, modifier = Modifier.weight(1f))
             Surface(color = NothingSurface2, shape = RoundedCornerShape(4.dp), modifier = Modifier.padding(horizontal = 4.dp)) {
-                Text(exercise.area.uppercase(), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp), color = NothingMuted, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
+                Text(exercise.area, style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp), color = NothingMuted, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
             }
             if (exercise.isCustom) {
                 Surface(
@@ -286,7 +286,7 @@ fun AddExerciseRow(areas: List<String>, accentColor: Color, onAdd: (String, Stri
                 ) {
                     areas.forEach { a ->
                         DropdownMenuItem(
-                            text    = { Text(a.uppercase(), color = NothingText, style = MaterialTheme.typography.labelSmall) },
+                            text    = { Text(a, color = NothingText, style = MaterialTheme.typography.labelSmall) },
                             onClick = { area = a; expanded = false }
                         )
                     }
@@ -364,7 +364,7 @@ fun EditExerciseRow(initialName: String, initialArea: String, areas: List<String
                 ) {
                     areas.forEach { a ->
                         DropdownMenuItem(
-                            text    = { Text(a.uppercase(), color = NothingText, style = MaterialTheme.typography.labelSmall) },
+                            text    = { Text(a, color = NothingText, style = MaterialTheme.typography.labelSmall) },
                             onClick = { area = a; expanded = false }
                         )
                     }

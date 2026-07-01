@@ -197,7 +197,7 @@ fun WorkoutCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text     = name.uppercase(),
+                text     = name,
                 style    = MaterialTheme.typography.labelMedium,
                 color    = NothingText,
                 modifier = Modifier.weight(1f)

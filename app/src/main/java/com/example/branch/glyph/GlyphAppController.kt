@@ -21,6 +21,9 @@ object GlyphAppController {
     private var setAppMatrixColorsMethod: Method? = null
     private var setFrameColorsMethod: Method? = null
 
+    fun isConnected(): Boolean = glyphConnected && iGlyphService != null
+    fun getService(): Any? = iGlyphService
+
     fun init(appCtx: Context) {
         Log.d(TAG, "GlyphAppController init called!")
         try {

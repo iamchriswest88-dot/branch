@@ -66,7 +66,7 @@ fun PlanScreen(vm: PlanViewModel = viewModel(factory = PlanViewModel.factory()))
                         Icon(Icons.Default.ChevronLeft, contentDescription = "Previous Week", tint = NothingMuted)
                     }
                     Text(
-                        text = weekLabel.uppercase(), 
+                        text = weekLabel, 
                         style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 2.sp), 
                         color = NothingMuted
                     )
@@ -101,7 +101,7 @@ fun PlanScreen(vm: PlanViewModel = viewModel(factory = PlanViewModel.factory()))
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = day.shortDayName.uppercase(),
+                                    text = day.shortDayName,
                                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
                                     color = if (isSelected) NothingBg else NothingMuted
                                 )
@@ -186,7 +186,7 @@ fun PlanDayDetails(
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text     = day.dayLabel.uppercase() + if (day.isToday && day.dayLabel != "TODAY") " · TODAY" else "",
+                    text     = day.dayLabel + if (day.isToday && day.dayLabel != "TODAY") " · TODAY" else "",
                     style    = MaterialTheme.typography.labelMedium,
                     color    = if (day.isToday) GymPurple else NothingText,
                     modifier = Modifier.weight(1f)

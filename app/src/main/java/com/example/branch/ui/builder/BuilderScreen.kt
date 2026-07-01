@@ -151,7 +151,7 @@ fun StepCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = { showPicker = true }, modifier = Modifier.weight(1f)) {
                     Text(
-                        step.exercise?.name?.uppercase() ?: "TAP TO SELECT EXERCISE",
+                        step.exercise?.name? ?: "TAP TO SELECT EXERCISE",
                         style = MaterialTheme.typography.labelMedium,
                         color = if (step.exercise != null) NothingText else NothingFaint
                     )
@@ -211,7 +211,7 @@ fun StepCard(
                     modifier = Modifier.fillMaxWidth(0.38f)
                 )
             }
-            Text(step.summary(isFlow).uppercase(), style = MaterialTheme.typography.labelSmall, color = NothingMuted)
+            Text(step.summary(isFlow), style = MaterialTheme.typography.labelSmall, color = NothingMuted)
         }
     }
 }
@@ -279,8 +279,8 @@ fun ExercisePickerDialog(
                 items(filtered) { ex ->
                     TextButton(onClick = { onSelect(ex) }, modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(ex.name.uppercase(), style = MaterialTheme.typography.labelMedium, color = NothingText)
-                            Text(ex.area.uppercase(), style = MaterialTheme.typography.labelSmall, color = NothingMuted)
+                            Text(ex.name, style = MaterialTheme.typography.labelMedium, color = NothingText)
+                            Text(ex.area, style = MaterialTheme.typography.labelSmall, color = NothingMuted)
                         }
                     }
                 }
