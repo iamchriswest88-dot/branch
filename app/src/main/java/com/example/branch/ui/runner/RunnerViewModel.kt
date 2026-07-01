@@ -118,13 +118,13 @@ class RunnerViewModel(
             )
         }
         if (phase.type == PhaseType.WORK) audio.playWorkStart()
-        GlyphAppController.showCountdown(phase.durationSec)
+        GlyphAppController.showCountdown(phase.durationSec, phase.durationSec)
 
         timer = object : CountDownTimer(phase.durationSec.toLong() * 1000L, 1000L) {
             override fun onTick(ms: Long) {
                 val secs = ((ms + 500L) / 1000L).toInt()
                 _state.update { it.copy(secondsLeft = secs) }
-                GlyphAppController.showCountdown(secs)
+                GlyphAppController.showCountdown(secs, phase.durationSec)
                 if (secs in 1..3 && phase.type != PhaseType.REST) audio.playTick()
             }
             override fun onFinish() {
@@ -159,7 +159,7 @@ class RunnerViewModel(
             override fun onTick(ms: Long) {
                 val secs = ((ms + 500L) / 1000L).toInt()
                 _state.update { it.copy(secondsLeft = secs) }
-                GlyphAppController.showCountdown(secs)
+                GlyphAppController.showCountdown(secs, phase.durationSec)
                 if (secs in 1..3 && phase.type != PhaseType.REST) audio.playTick()
             }
             override fun onFinish() {
