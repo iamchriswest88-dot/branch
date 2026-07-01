@@ -36,13 +36,13 @@ object GlyphAppController {
                     val gm = glyphManager ?: return
                     try {
                         when {
-                            Common.is20111() -> gm.register(Glyph.DEVICE_20111)
-                            Common.is22111() -> gm.register(Glyph.DEVICE_22111)
-                            Common.is23111() -> gm.register(Glyph.DEVICE_23111)
-                            Common.is23113() -> gm.register(Glyph.DEVICE_23113)
-                            Common.is24111() -> gm.register(Glyph.DEVICE_24111)
-                            Common.is25111() -> gm.register(Glyph.DEVICE_25111)
-                            else -> gm.register(Glyph.DEVICE_25111)
+                            Common.is20111() -> gm.register("20111")
+                            Common.is22111() -> gm.register("22111")
+                            Common.is23111() -> gm.register("23111")
+                            Common.is23113() -> gm.register("23113")
+                            Common.is24111() -> gm.register("24111")
+                            Common.is25111() -> gm.register("25111")
+                            else -> gm.register("25111")
                         }
                         gm.openSession()
                         Log.d(TAG, "GlyphManager connected and session opened")
@@ -66,13 +66,7 @@ object GlyphAppController {
                 override fun onServiceConnected(mgr: GlyphMatrixManager) {
                     matrixConnected = true
                     try {
-                        when {
-                            Common.is23111() -> mgr.register(Glyph.DEVICE_23111)
-                            Common.is23113() -> mgr.register(Glyph.DEVICE_23113)
-                            Common.is24111() -> mgr.register(Glyph.DEVICE_24111)
-                            Common.is25111() -> mgr.register(Glyph.DEVICE_25111)
-                            else -> mgr.register(Glyph.DEVICE_25111)
-                        }
+                        mgr.register(Glyph.DEVICE_25111p)
                         Log.d(TAG, "GlyphMatrixManager connected")
                     } catch (e: Exception) {
                         Log.e(TAG, "GlyphMatrixManager register failed: ${e.message}")
