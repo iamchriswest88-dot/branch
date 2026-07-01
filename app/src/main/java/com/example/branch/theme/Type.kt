@@ -13,10 +13,11 @@ val ntype82Family = FontFamily(Font(R.font.ntype82_headline))
 val ndot57Family = FontFamily(Font(R.font.ndot57_regular))
 val spaceGroteskFamily = FontFamily(Font(R.font.space_grotesk_regular))
 val letteraMonoFamily = FontFamily(Font(R.font.lettera_mono_ll_regular))
+val interLightFamily = FontFamily(Font(R.font.inter_light))
 
 val displayFontFamily: FontFamily = ntype82Family
-val bodyFontFamily: FontFamily    = spaceGroteskFamily
-val labelFontFamily: FontFamily   = letteraMonoFamily
+val bodyFontFamily: FontFamily    = interLightFamily
+val labelFontFamily: FontFamily   = interLightFamily
 
 val BranchTypography = Typography(
     displayLarge = TextStyle(
