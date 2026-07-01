@@ -13,7 +13,7 @@ val ntype82Family = FontFamily(Font(R.font.ntype82_headline))
 val ndot57Family = FontFamily(Font(R.font.ndot57_regular))
 val interLightFamily = FontFamily(Font(R.font.inter_light))
 
-val displayFontFamily: FontFamily = interLightFamily
+val displayFontFamily: FontFamily = ntype82Family
 val bodyFontFamily: FontFamily    = interLightFamily
 val labelFontFamily: FontFamily   = interLightFamily
 
