@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
     <!-- Network access for Supabase Sync -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".BranchApplication"
@@ -37,10 +40,14 @@
             android:permission="com.nothing.ketchum.permission.ENABLE">
             <intent-filter>
                 <action android:name="com.nothing.ketchum.action.GLYPH_TOY"/>
+                <action android:name="com.nothing.glyph.action.GLYPH_TOY_SERVICE"/>
             </intent-filter>
             <meta-data
                 android:name="com.nothing.ketchum.metadata.GLYPH_TOY"
                 android:value="true"/>
+            <meta-data 
+                android:name="com.nothing.glyph.metadata.name" 
+                android:value="Branch"/>
         </service>
 
         <receiver
@@ -74,6 +81,14 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/flow_widget_info" />
+        </receiver>
+
+        <!-- Reminder System -->
+        <receiver android:name=".reminder.ReminderReceiver" android:exported="false" />
+        <receiver android:name=".reminder.BootReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
         </receiver>
 
     </application>

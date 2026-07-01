@@ -15,6 +15,8 @@ class BranchPrefs(private val context: Context) {
         val GYM_STREAK           = intPreferencesKey("gym_streak")
         val FLOW_STREAK          = intPreferencesKey("flow_streak")
         val LAST_GLYPH_CATEGORY  = stringPreferencesKey("last_glyph_category")
+        val REMINDER_ENABLED     = booleanPreferencesKey("reminder_enabled")
+        val REMINDER_TIME        = stringPreferencesKey("reminder_time")
     }
 
     val gymStreak: Flow<Int> = context.dataStore.data
@@ -26,6 +28,12 @@ class BranchPrefs(private val context: Context) {
     val lastGlyphCategory: Flow<String> = context.dataStore.data
         .map { it[LAST_GLYPH_CATEGORY] ?: "gym" }
 
+    val reminderEnabled: Flow<Boolean> = context.dataStore.data
+        .map { it[REMINDER_ENABLED] ?: false }
+
+    val reminderTime: Flow<String> = context.dataStore.data
+        .map { it[REMINDER_TIME] ?: "17:00" }
+
     suspend fun setGymStreak(value: Int) {
         context.dataStore.edit { it[GYM_STREAK] = value }
     }
@@ -36,5 +44,13 @@ class BranchPrefs(private val context: Context) {
 
     suspend fun setLastGlyphCategory(category: String) {
         context.dataStore.edit { it[LAST_GLYPH_CATEGORY] = category }
+    }
+
+    suspend fun setReminderEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[REMINDER_ENABLED] = enabled }
+    }
+
+    suspend fun setReminderTime(time: String) {
+        context.dataStore.edit { it[REMINDER_TIME] = time }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.branch.ui.hub
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,6 +14,7 @@ import com.example.branch.data.prefs.BranchPrefs
 import com.example.branch.theme.*
 import com.example.branch.ui.emblem.EmblemStyle
 import com.example.branch.ui.emblem.EmblemView
+import kotlinx.coroutines.launch
 
 @Composable
 fun HubScreen() {
@@ -83,6 +85,49 @@ fun HubScreen() {
             EmblemView(filledSections = flowStreak, style = EmblemStyle.FLOW, isPlannedToday = flowPlanned, size = 150.dp)
             
             Spacer(modifier = Modifier.weight(1f))
+
+            val reminderEnabled by prefs.reminderEnabled.collectAsState(initial = false)
+            val reminderTime by prefs.reminderTime.collectAsState(initial = "17:00")
+            val coroutineScope = rememberCoroutineScope()
+
+            val timePickerDialog = remember {
+                android.app.TimePickerDialog(
+                    context,
+                    { _, hour, min ->
+                        val formattedTime = String.format("%02d:%02d", hour, min)
+                        coroutineScope.launch {
+                            prefs.setReminderTime(formattedTime)
+                            if (reminderEnabled) {
+                                com.example.branch.reminder.AlarmScheduler.scheduleAlarm(context, true, formattedTime)
+                            }
+                        }
+                    },
+                    reminderTime.split(":").getOrNull(0)?.toIntOrNull() ?: 17,
+                    reminderTime.split(":").getOrNull(1)?.toIntOrNull() ?: 0,
+                    true
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.clickable { timePickerDialog.show() }) {
+                    Text("Daily Glyph Reminder", style = MaterialTheme.typography.labelMedium, color = NothingText)
+                    Text(reminderTime, style = MaterialTheme.typography.bodySmall, color = NothingMuted)
+                }
+                Switch(
+                    checked = reminderEnabled,
+                    onCheckedChange = { enabled ->
+                        coroutineScope.launch {
+                            prefs.setReminderEnabled(enabled)
+                            com.example.branch.reminder.AlarmScheduler.scheduleAlarm(context, enabled, reminderTime)
+                        }
+                    },
+                    colors = SwitchDefaults.colors(checkedThumbColor = NothingText, checkedTrackColor = Color.DarkGray)
+                )
+            }
         }
     }
 }
