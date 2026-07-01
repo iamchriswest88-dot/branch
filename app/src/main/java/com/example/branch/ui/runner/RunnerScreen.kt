@@ -78,13 +78,8 @@ fun ActiveRunnerScreen(
                 else   -> NothingMuted
             }
 
-            // Phase label + close
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    state.phaseLabel.uppercase(),
-                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 2.sp),
-                    color = phaseColor
-                )
+            // Close button
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onExit) {
                     Icon(Icons.Default.Close, "Exit", tint = NothingFaint)
                 }
@@ -96,6 +91,13 @@ fun ActiveRunnerScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(
+                    state.phaseLabel.uppercase(),
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp, letterSpacing = 2.sp),
+                    color = phaseColor
+                )
+                Spacer(Modifier.height(16.dp))
+
                 // Big countdown
                 val countdownGrid = com.example.branch.glyph.CountdownRenderer.render(state.secondsLeft)
                 com.example.branch.ui.emblem.GlyphMatrixView(
